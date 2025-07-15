@@ -1,4 +1,5 @@
 import React from "react";
+import "../styles/Chatbot.css";
 
 function Chatbot() {
     return (
