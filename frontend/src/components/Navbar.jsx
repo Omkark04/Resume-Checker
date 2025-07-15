@@ -47,10 +47,10 @@ function Navbar() {
                 <h1 id="Logo">CareerPulse</h1>
                 
                 <div className="nav-links">
-                    <a href="#" onClick={() => handleNavigate("/resume")}>ResumeAnalyzer</a>
-                    <a href="#" onClick={() => handleNavigate("/news")}>News</a>
-                    <a href="#" onClick={() => handleNavigate("/chatbot")}>Chatbot</a>
-                    <a onClick={() => handleNavigate("/notes")}>Notes</a>
+                    <a className="links-nav" onClick={() => handleNavigate("/resume")}>ResumeAnalyzer</a>
+                    <a className="links-nav" onClick={() => handleNavigate("/news")}>News</a>
+                    <a className="links-nav" onClick={() => handleNavigate("/chatbot")}>Chatbot</a>
+                    <a className="links-nav" onClick={() => handleNavigate("/notes")}>Notes</a>
                 </div>
                 
                 <button className="theme-toggle" onClick={toggleTheme}>
@@ -62,8 +62,8 @@ function Navbar() {
                 </button>
                 
                 <div className="Auth">
-                    <button id="Login">Login</button>
-                    <button id="Register">Register</button>
+                    <button id="Login" onClick={() => handleNavigate("/login")}>Login</button>
+                    <button id="Register" onClick={() => handleNavigate("/register")}>Register</button>
                 </div>
                 
                 <div className="hamburger" onClick={toggleMenu}>
@@ -80,15 +80,15 @@ function Navbar() {
             
             <div className={`mobile-menu ${isMenuOpen ? "active" : ""}`}>
                 <div className="mobile-links">
-                    <a href="#" onClick={() => handleNavigate("/resume")}>ResumeAnalyzer</a>
-                    <a href="#" onClick={() => handleNavigate("/news")}>News</a>
-                    <a href="#" onClick={() => handleNavigate("/chatbot")}>Chatbot</a>
-                    <a onClick={() => handleNavigate("/notes")}>Notes</a>
+                    <a className="links-nav" onClick={() => handleNavigate("/resume")}>ResumeAnalyzer</a>
+                    <a className="links-nav" onClick={() => handleNavigate("/news")}>News</a>
+                    <a className="links-nav" onClick={() => handleNavigate("/chatbot")}>Chatbot</a>
+                    <a className="links-nav" onClick={() => handleNavigate("/notes")}>Notes</a>
                 </div>
                 
                 <div className="Auth">
-                    <button id="Login">Login</button>
-                    <button id="Register">Register</button>
+                    <button id="Login" onClick={() => handleNavigate("/login")}>Login</button>
+                    <button id="Register" onClick={() => handleNavigate("/register")}>Register</button>
                 </div>
             </div>
         </>

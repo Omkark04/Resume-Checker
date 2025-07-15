@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from .news_service import NewsService
 import logging
-
+from .resume_service import ResumeAssistantService
 
 logger = logging.getLogger(__name__)
 class NoteListCreate(generics.ListCreateAPIView):

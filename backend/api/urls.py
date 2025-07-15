@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 from .news_views import get_tech_news, get_news_categories, get_category_news
+from .resume_views import gemini_chat
 
 urlpatterns = [
     path("notes/", views.NoteListCreate.as_view(), name="note-list"),
@@ -11,4 +12,7 @@ urlpatterns = [
     path("news/", get_tech_news, name="tech-news"),
     path("news/categories/", get_news_categories, name="news-categories"),
     path("news/category/<str:category>/", get_category_news, name="category-news"),
+
+    path('chat/', gemini_chat, name='gemini-chat'),
+    
 ]

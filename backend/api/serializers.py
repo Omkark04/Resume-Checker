@@ -21,3 +21,4 @@ class NoteSerializer(serializers.ModelSerializer):
 class NewsQuerySerializer(serializers.Serializer):
     page = serializers.IntegerField(default=1, min_value=1)
     topic = serializers.CharField(required=False, allow_blank=True)
+

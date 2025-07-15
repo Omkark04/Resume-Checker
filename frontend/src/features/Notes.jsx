@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import api from "../api";
 import "../styles/Notes.css";
+import Navbar from "../components/Navbar";
 
 function Notes() {
     const [notes, setNotes] = useState([]);
@@ -48,6 +49,7 @@ function Notes() {
 
     return (
         <div className="notes-container">
+            <Navbar/>
             <h2>Your Notes</h2>
             {notes.length > 0 ? (
                 notes.map((note) => {

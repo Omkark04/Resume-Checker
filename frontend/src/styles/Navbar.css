@@ -29,6 +29,10 @@
     gap: 2.5rem;
 }
 
+.links-nav {
+    cursor: pointer;
+}
+
 .nav-links a {
     color: #4b5563;
     text-decoration: none;
@@ -73,10 +77,133 @@
     transition: all 0.3s ease;
 }
 
+/* Auth Buttons Styling */
 .Auth {
-    display: flex;
-    gap: 1.2rem;
-    align-items: center;
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+#Login, #Register {
+  position: relative;
+  padding: 0.8rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.5s ease;
+  overflow: hidden;
+  z-index: 1;
+  border: none;
+  outline: none;
+}
+
+/* Light Theme */
+.light #Login {
+  background: transparent;
+  color: #3b82f6;
+  box-shadow: 0 0 0 2px #3b82f6 inset;
+}
+
+.light #Register {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+/* Dark Theme */
+.dark #Login {
+  background: transparent;
+  color: #60a5fa;
+  box-shadow: 0 0 0 2px #60a5fa inset;
+}
+
+.dark #Register {
+  background: linear-gradient(135deg, #1e40af, #1e3a8a);
+  color: white;
+  box-shadow: 0 4px 15px rgba(30, 64, 175, 0.3);
+}
+
+/* Border Animation */
+#Login::before, #Register::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50px;
+  z-index: -1;
+  transition: all 0.4s ease;
+}
+
+#Login::before {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  transform: scaleX(0);
+  transform-origin: right;
+}
+
+#Register::before {
+  background: linear-gradient(135deg, #1e40af, #1e3a8a);
+  opacity: 0;
+}
+
+/* Hover Effects */
+#Login:hover {
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 0 0 2px transparent inset, 
+              0 5px 20px rgba(59, 130, 246, 0.4);
+}
+
+#Register:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(30, 64, 175, 0.5);
+}
+
+#Login:hover::before {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+#Register:hover::before {
+  opacity: 1;
+}
+
+/* Ripple Effect */
+#Login::after, #Register::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.5);
+  opacity: 0;
+  border-radius: 100%;
+  transform: scale(1, 1) translate(-50%);
+  transform-origin: 50% 50%;
+}
+
+#Login:hover::after, #Register:hover::after {
+  animation: ripple 1s ease-out;
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0, 0);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(20, 20);
+    opacity: 0;
+  }
+}
+
+/* Active State */
+#Login:active, #Register:active {
+  transform: translateY(0);
+  transition: all 0.1s ease;
 }
 
 /* Mobile menu styles */
