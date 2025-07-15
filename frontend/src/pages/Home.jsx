@@ -1,19 +1,28 @@
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import api from "../api";
+import Navbar from "../components/Navbar";
 import "../styles/Home.css";
 
 function Home() {
-    const navigate = useNavigate();
+    const [username, setUsername] = useState("");
 
-    const handleNavigate = () => {
-        navigate("/notes");
-    };
+    useEffect(() => {
+        api.get("/api/user/profile/")
+            .then((res) => {
+                setUsername(res.data.username);
+            })
+            .catch((err) => {
+                console.error("Failed to fetch user profile", err);
+            });
+    }, []);
 
     return (
         <div className="home-clean">
-            <h1>Welcome to CareerPulse</h1>
-            <button className="notes-button" onClick={handleNavigate}>
-                Go to Notes
-            </button>
+            <Navbar />
+            <div className="home-content">
+                <h2 className="welcome-text">Welcome to CareerPulse</h2>
+                <h4 className="welcome-text">Hi there, {username}</h4>
+            </div>
         </div>
     );
 }

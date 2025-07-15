@@ -5,6 +5,9 @@ import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import Notes from "./features/Notes";
 import ProtectedRoute from "./components/ProtectedRoutes";
+import ResumeAnalyzer from "./features/ResumeAnalyzer";
+import Chatbot from "./features/Chatbot";
+import News from "./features/News";
 
 function Logout() {
   localStorage.clear();
@@ -34,6 +37,9 @@ function App() {
         <Route path="*" element={<NotFound />} />
         <Route path="*" element={<NotFound />} />
         <Route path="/notes" element={<Notes />} />
+        <Route path="/resume" element={<ResumeAnalyzer />} />
+        <Route path="/news" element={<News />} />
+        <Route path="/chatbot" element={<Chatbot />} />
       </Routes>
     </BrowserRouter>
   );

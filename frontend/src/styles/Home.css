@@ -1,22 +1,86 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+    overflow-x: hidden;
+}
+
 .home-clean {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    min-height: 100vh;
+    width: 100vw;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    padding: 0;
+    margin: 0;
+    text-align: center;
+}
+
+.home-content {
+    display: flex;
+    flex-direction: column;
     justify-content: center;
-    padding-top: 100px;
+    align-items: center;
+    height: calc(100vh - 80px);
+    padding: 2rem;
 }
 
-.notes-button {
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: #2563eb;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    margin-top: 20px;
+.home-clean h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1.5rem;
+    font-weight: 800;
+    background: linear-gradient(to right, #2563eb, #1e40af);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    line-height: 1.2;
 }
 
-.notes-button:hover {
-    background-color: #1d4ed8;
+.home-clean h2 {
+    font-size: 2rem;
+    color: #4b5563;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.home-clean h4 {
+    font-size: 1.5rem;
+    color: #64748b;
+    font-weight: 400;
+    margin-bottom: 3rem;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Animation for the welcome text */
+.welcome-text {
+    animation: fadeIn 0.8s ease-out forwards;
+}
+/* Theme Toggle */
+.home-clean {
+    background: var(--bg-color);
+    color: var(--text-color);
+}
+
+.home-clean h2 {
+    color: var(--text-color);
+}
+
+.home-clean h4 {
+    color: var(--link-color);
+}
+
+/* Add transition for smooth theme switching */
+.home-clean,
+.home-clean h1,
+.home-clean h2,
+.home-clean h4 {
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
