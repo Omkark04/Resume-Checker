@@ -48,51 +48,72 @@ function Notes() {
     };
 
     return (
-        <div className="notes-container">
-            <Navbar/>
-            <h2>Your Notes</h2>
-            {notes.length > 0 ? (
-                notes.map((note) => {
-                    const formattedDate = new Date(note.created_at).toLocaleDateString("en-US");
-                    return (
-                        <div className="note-container" key={note.id}>
-                            <p className="note-title">{note.title}</p>
-                            <p className="note-content">{note.content}</p>
-                            <p className="note-date">{formattedDate}</p>
-                            <button
-                                className="delete-button"
-                                onClick={() => deleteNote(note.id)}
-                            >
-                                Delete
-                            </button>
+        <div className="notes-app">
+            <Navbar />
+            <div className="notes-container">
+                <h2 className="notes-title">Your Notes</h2>
+                
+                <div className="notes-grid">
+                    {notes.length > 0 ? (
+                        notes.map((note) => {
+                            const formattedDate = new Date(note.created_at).toLocaleDateString("en-US", {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            });
+                            return (
+                                <div className="note-card" key={note.id}>
+                                    <div className="note-content">
+                                        <h3 className="note-title">{note.title}</h3>
+                                        <p className="note-text">{note.content}</p>
+                                        <p className="note-date">{formattedDate}</p>
+                                    </div>
+                                    <button
+                                        className="delete-button glow-on-hover"
+                                        onClick={() => deleteNote(note.id)}
+                                    >
+                                        Delete
+                                    </button>
+                                </div>
+                            );
+                        })
+                    ) : (
+                        <div className="empty-state">
+                            <p>No notes found. Create your first note below!</p>
                         </div>
-                    );
-                })
-            ) : (
-                <p>No notes found.</p>
-            )}
+                    )}
+                </div>
 
-            <h3>Create a New Note</h3>
-            <form onSubmit={createNote} className="note-form">
-                <input
-                    type="text"
-                    id="title"
-                    name="title"
-                    placeholder="Title"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    required
-                />
-                <textarea
-                    placeholder="Content"
-                    id="content"
-                    name="content"
-                    value={content}
-                    onChange={(e) => setContent(e.target.value)}
-                    required
-                />
-                <button type="submit">Add Note</button>
-            </form>
+                <div className="create-note-section">
+                    <h3 className="create-title">Create New Note</h3>
+                    <form onSubmit={createNote} className="note-form">
+                        <input
+                            type="text"
+                            id="title"
+                            name="title"
+                            placeholder="Note title..."
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            required
+                            className="form-input glow-on-focus"
+                        />
+                        <textarea
+                            placeholder="Your note content..."
+                            id="content"
+                            name="content"
+                            value={content}
+                            onChange={(e) => setContent(e.target.value)}
+                            required
+                            className="form-textarea glow-on-focus"
+                        />
+                        <button type="submit" className="submit-button glow-on-hover">
+                            Add Note
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
     );
 }

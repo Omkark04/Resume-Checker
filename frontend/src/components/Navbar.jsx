@@ -1,11 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Navbar.css";
+import api from "../api";
 
 function Navbar() {
     const navigate = useNavigate();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [darkMode, setDarkMode] = useState(false);
+    const [username, setUsername] = useState("");
+
+    useEffect(() => {
+        api.get("/api/user/profile/")
+            .then((res) => {
+                setUsername(res.data.username);
+            })
+            .catch((err) => {
+                console.error("Failed to fetch user profile", err);
+            });
+    }, []);
 
     // Check for saved theme preference or system preference
     useEffect(() => {
@@ -72,7 +84,7 @@ function Navbar() {
                     <div className={`line3 ${isMenuOpen ? "toggle" : ""}`}></div>
                 </div>
                 
-                <button id="UserProfile"></button>
+                <button id="UserProfile">{username[0]}</button>
             </div>
             
             {/* Mobile Menu */}

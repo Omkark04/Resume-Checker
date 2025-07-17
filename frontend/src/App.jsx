@@ -8,6 +8,7 @@ import ProtectedRoute from "./components/ProtectedRoutes";
 import ResumeAnalyzer from "./features/ResumeAnalyzer";
 import Chatbot from "./features/Chatbot";
 import News from "./features/News";
+import AnalysisResults from "./features/AnalysisResults";
 
 function Logout() {
   localStorage.clear();
@@ -35,9 +36,9 @@ function App() {
         <Route path="/register" element={<RegisterAndLogout />} />
         <Route path="/logout" element={<Logout />} />
         <Route path="*" element={<NotFound />} />
-        <Route path="*" element={<NotFound />} />
         <Route path="/notes" element={<Notes />} />
         <Route path="/resume" element={<ResumeAnalyzer />} />
+        <Route path="/resume-analysis" element={<AnalysisResults />} />
         <Route path="/news" element={<News />} />
         <Route path="/chatbot" element={<Chatbot />} />
       </Routes>

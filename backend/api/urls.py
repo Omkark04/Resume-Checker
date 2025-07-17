@@ -2,6 +2,7 @@ from django.urls import path
 from . import views
 from .news_views import get_tech_news, get_news_categories, get_category_news
 from .resume_views import gemini_chat
+from .analysis_core import ResumeAnalysisView, UserResumeAnalysesView
 
 urlpatterns = [
     path("notes/", views.NoteListCreate.as_view(), name="note-list"),
@@ -13,6 +14,11 @@ urlpatterns = [
     path("news/categories/", get_news_categories, name="news-categories"),
     path("news/category/<str:category>/", get_category_news, name="category-news"),
 
+    #Chatbot endpoints
     path('chat/', gemini_chat, name='gemini-chat'),
+
+    #Resume Analysis endpoints
+    path('resume/analyze/', ResumeAnalysisView.as_view(), name='resume_analyze'),
+    path('resume/analyses/', UserResumeAnalysesView.as_view(), name='user_resume_analyses'),
     
 ]

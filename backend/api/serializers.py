@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import Note
+from .models import Note, ResumeAnalysis
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -22,3 +22,15 @@ class NewsQuerySerializer(serializers.Serializer):
     page = serializers.IntegerField(default=1, min_value=1)
     topic = serializers.CharField(required=False, allow_blank=True)
 
+class ResumeAnalysisSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='user.username', read_only=True)
+    
+    class Meta:
+        model = ResumeAnalysis
+        fields = ['id', 'username', 'resume_file', 'job_description', 
+                 'analysis_time', 'parsed_data', 'analysis_results',
+                 'ats_score', 'matched_keywords', 'missing_keywords',
+                 'recommendations']
+        read_only_fields = ['analysis_time', 'parsed_data', 'analysis_results',
+                          'ats_score', 'matched_keywords', 'missing_keywords',
+                          'recommendations']
