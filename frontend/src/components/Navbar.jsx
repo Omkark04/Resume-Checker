@@ -8,15 +8,30 @@ function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [darkMode, setDarkMode] = useState(false);
     const [username, setUsername] = useState("");
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+    // Check authentication status and user profile
     useEffect(() => {
-        api.get("/api/user/profile/")
-            .then((res) => {
-                setUsername(res.data.username);
-            })
-            .catch((err) => {
-                console.error("Failed to fetch user profile", err);
-            });
+        const checkAuth = async () => {
+            try {
+                const response = await api.get("/api/check-session/");
+                setIsAuthenticated(response.data.isAuthenticated);
+                
+                if (response.data.isAuthenticated) {
+                    const profileResponse = await api.get("/api/user/profile/");
+                    setUsername(profileResponse.data.username);
+                }
+            } catch (err) {
+                console.error("Failed to fetch auth status", err);
+                setIsAuthenticated(false);
+            }
+        };
+
+        checkAuth();
+
+        // Set up periodic session check
+        const interval = setInterval(checkAuth, 5 * 60 * 1000); // Check every 5 minutes
+        return () => clearInterval(interval);
     }, []);
 
     // Check for saved theme preference or system preference
@@ -53,10 +68,21 @@ function Navbar() {
         setDarkMode(!darkMode);
     };
 
+    const handleLogout = async () => {
+        try {
+            await api.post("/api/logout/");
+            setIsAuthenticated(false);
+            setUsername("");
+            navigate("/login");
+        } catch (err) {
+            console.error("Logout failed", err);
+        }
+    };
+
     return (
         <>
             <div className="Navbar">
-                <h1 id="Logo">CareerPulse</h1>
+                <h1 id="Logo" onClick={() => handleNavigate("/")}>CareerPulse</h1>
                 
                 <div className="nav-links">
                     <a className="links-nav" onClick={() => handleNavigate("/resume")}>ResumeAnalyzer</a>
@@ -73,18 +99,33 @@ function Navbar() {
                     )}
                 </button>
                 
-                <div className="Auth">
-                    <button id="Login" onClick={() => handleNavigate("/login")}>Login</button>
-                    <button id="Register" onClick={() => handleNavigate("/register")}>Register</button>
-                </div>
+                {/* Desktop Auth Buttons */}
+                {!isAuthenticated && (
+                    <div className="desktop-auth">
+                        <button id="Login" onClick={() => handleNavigate("/login")}>Login</button>
+                        <button id="Register" onClick={() => handleNavigate("/register")}>Register</button>
+                    </div>
+                )}
+                
+                {/* Desktop Profile and Logout */}
+                {isAuthenticated && (
+                    <div className="desktop-auth">
+                        <button 
+                            id="UserProfile" 
+                            onClick={() => handleNavigate("/profile")}
+                            className="profile-button"
+                        >
+                            {username[0]?.toUpperCase() || "U"}
+                        </button>
+                        <button id="Logout" onClick={handleLogout}>Logout</button>
+                    </div>
+                )}
                 
                 <div className="hamburger" onClick={toggleMenu}>
                     <div className={`line1 ${isMenuOpen ? "toggle" : ""}`}></div>
                     <div className={`line2 ${isMenuOpen ? "toggle" : ""}`}></div>
                     <div className={`line3 ${isMenuOpen ? "toggle" : ""}`}></div>
                 </div>
-                
-                <button id="UserProfile">{username[0]}</button>
             </div>
             
             {/* Mobile Menu */}
@@ -98,10 +139,17 @@ function Navbar() {
                     <a className="links-nav" onClick={() => handleNavigate("/notes")}>Notes</a>
                 </div>
                 
-                <div className="Auth">
-                    <button id="Login" onClick={() => handleNavigate("/login")}>Login</button>
-                    <button id="Register" onClick={() => handleNavigate("/register")}>Register</button>
-                </div>
+                {isAuthenticated ? (
+                    <div className="mobile-auth">
+                        
+                        <button id="mobile-logout" onClick={handleLogout}>Logout</button>
+                    </div>
+                ) : (
+                    <div className="mobile-auth">
+                        <button id="Login" onClick={() => handleNavigate("/login")}>Login</button>
+                        <button id="Register" onClick={() => handleNavigate("/register")}>Register</button>
+                    </div>
+                )}
             </div>
         </>
     );
