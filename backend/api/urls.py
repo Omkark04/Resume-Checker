@@ -3,6 +3,9 @@ from . import views
 from .news_views import get_tech_news, get_news_categories, get_category_news
 from .resume_views import gemini_chat
 from .analysis_core import ResumeAnalysisView, UserResumeAnalysesView
+from django.urls import path
+from . import views
+from rest_framework.permissions import AllowAny
 
 urlpatterns = [
     # Authentication endpoints
@@ -30,6 +33,5 @@ urlpatterns = [
     path('resume/analyze/', ResumeAnalysisView.as_view(), name='resume_analyze'),
     path('resume/analyses/', UserResumeAnalysesView.as_view(), name='user_resume_analyses'),
     
-    # User registration
-    path('register/', views.CreateUserView.as_view(), name='register'),
+    path("user/profile-details/", views.user_profile_details, name="user-profile-details"),
 ]

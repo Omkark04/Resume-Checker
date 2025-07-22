@@ -19,6 +19,16 @@ class JobMatchingSystem:
         print("CONSOLE: Initializing ML-only Job Matching System...")
         
         # Load ML models
+        try:
+            # Ensure these .pkl files exist in the same directory or provide full paths
+            self.clf_model = self._load_model(r"C:\Users\omkar\OneDrive\Desktop\InnoHack 2.0\Resume-Checker\backend\api\clf.pkl")
+            print("CONSOLE: Classifier model loaded")
+        except FileNotFoundError:
+            print("CONSOLE: Failed to load classifier model (clf.pkl not found). Fallback will be used.")
+            self.clf_model = None
+        except Exception as e:
+            print(f"CONSOLE: Error loading classifier model: {e}")
+            self.clf_model = None
             
         try:
             self.tfidf = self._load_model(r"C:\Users\omkar\OneDrive\Desktop\InnoHack 2.0\Resume-Checker\backend\api\tfidf.pkl")

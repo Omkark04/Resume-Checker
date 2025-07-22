@@ -1,0 +1,151 @@
+.profile-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.profile-overlay-content {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.dark-theme .profile-overlay-content {
+  background-color: #2d3748;
+  color: #f7fafc;
+}
+
+.close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #666;
+}
+
+.dark-theme .close-button {
+  color: #a0aec0;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #4299e1;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  margin-right: 1rem;
+}
+
+.user-info h3 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.user-info p {
+  margin: 0.2rem 0;
+  color: #666;
+}
+
+.dark-theme .user-info p {
+  color: #a0aec0;
+}
+
+.user-type {
+  background-color: #e2e8f0;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  display: inline-block;
+  font-size: 0.8rem;
+}
+
+.dark-theme .user-type {
+  background-color: #4a5568;
+}
+
+.profile-section {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.dark-theme .profile-section {
+  border-bottom-color: #4a5568;
+}
+
+.profile-section h4 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #4299e1;
+}
+
+.profile-section p {
+  margin: 0.5rem 0;
+}
+
+.profile-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.profile-actions button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.edit-button {
+  background-color: #4299e1;
+  color: white;
+}
+
+.change-password-button {
+  background-color: #e2e8f0;
+  color: #2d3748;
+}
+
+.dark-theme .change-password-button {
+  background-color: #4a5568;
+  color: #f7fafc;
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+}
+
+.error-message {
+  color: #e53e3e;
+  text-align: center;
+  padding: 1rem;
+}

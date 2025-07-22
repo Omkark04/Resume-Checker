@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Navbar.css";
 import api from "../api";
+import UserProfileOverlay from "./UserProfileOverlay";
 
 function Navbar() {
     const navigate = useNavigate();
@@ -9,26 +10,28 @@ function Navbar() {
     const [darkMode, setDarkMode] = useState(false);
     const [username, setUsername] = useState("");
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isProfileOpen, setIsProfileOpen] = useState(false);
 
     // Check authentication status and user profile
-    useEffect(() => {
-        const checkAuth = async () => {
-            try {
-                const response = await api.get("/api/check-session/");
-                setIsAuthenticated(response.data.isAuthenticated);
-                
-                if (response.data.isAuthenticated) {
-                    const profileResponse = await api.get("/api/user/profile/");
-                    setUsername(profileResponse.data.username);
-                }
-            } catch (err) {
-                console.error("Failed to fetch auth status", err);
+    const checkAuth = async () => {
+        try {
+            const response = await api.get("/api/check-session/");
+            if (response.data.isAuthenticated) {
+                setIsAuthenticated(true);
+                setUsername(response.data.username);
+            } else {
                 setIsAuthenticated(false);
+                setUsername("");
             }
-        };
+        } catch (err) {
+            console.error("Auth check error", err);
+            setIsAuthenticated(false);
+            setUsername("");
+        }
+    };
 
+    useEffect(() => {
         checkAuth();
-
         // Set up periodic session check
         const interval = setInterval(checkAuth, 5 * 60 * 1000); // Check every 5 minutes
         return () => clearInterval(interval);
@@ -112,7 +115,7 @@ function Navbar() {
                     <div className="desktop-auth">
                         <button 
                             id="UserProfile" 
-                            onClick={() => handleNavigate("/profile")}
+                            onClick={() => setIsProfileOpen(true)}
                             className="profile-button"
                         >
                             {username[0]?.toUpperCase() || "U"}
@@ -141,7 +144,6 @@ function Navbar() {
                 
                 {isAuthenticated ? (
                     <div className="mobile-auth">
-                        
                         <button id="mobile-logout" onClick={handleLogout}>Logout</button>
                     </div>
                 ) : (
@@ -151,6 +153,13 @@ function Navbar() {
                     </div>
                 )}
             </div>
+
+            {/* User Profile Overlay */}
+            <UserProfileOverlay 
+                isOpen={isProfileOpen}
+                onClose={() => setIsProfileOpen(false)}
+                username={username}
+            />
         </>
     );
 }

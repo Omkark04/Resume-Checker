@@ -19,8 +19,8 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/logout" element={<Navigate to="/login" />} />
         <Route path="*" element={<NotFound />} />
-        <Route path="/notes" element={<Notes />} />
         <Route path="/resume" element={<ResumeAnalyzer />} />
+        <Route path="/notes" element={<Notes />} />
         <Route path="/resume-analysis" element={<AnalysisResults />} />
         <Route path="/news" element={<News />} />
         <Route path="/chatbot" element={<Chatbot />} />
