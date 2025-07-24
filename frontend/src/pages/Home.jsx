@@ -43,7 +43,7 @@ const Home = () => {
             CareerPulse analyzes your resume and skills to connect you with the most relevant job opportunities, saving you hours of searching.
           </p>
           <div className="hero-buttons">
-            <Link to="/resume-analyzer" className="btn-primary">
+            <Link to="/resume" className="btn-primary" >
               📄 Upload Your Resume
             </Link>
             <button className="btn-secondary">
