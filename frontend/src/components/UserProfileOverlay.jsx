@@ -52,7 +52,6 @@ function UserProfileOverlay({ isOpen, onClose, username }) {
               </div>
               <div className="user-info">
                 <h3>{profileData?.full_name || username}</h3>
-                <p>{profileData?.email}</p>
                 <p className="user-type">
                   {profileData?.user_type === "HR" 
                     ? "HR Professional" 
@@ -63,6 +62,7 @@ function UserProfileOverlay({ isOpen, onClose, username }) {
             
             <div className="profile-section">
               <h4>Contact Information</h4>
+              <p><strong>Email:</strong> {profileData?.email}</p>
               <p><strong>Mobile:</strong> {profileData?.mobile || "Not provided"}</p>
               <p><strong>Date of Birth:</strong> {profileData?.dob || "Not provided"}</p>
             </div>
