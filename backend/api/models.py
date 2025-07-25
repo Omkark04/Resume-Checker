@@ -50,6 +50,7 @@ class ResumeAnalysis(models.Model):
     matched_keywords = models.JSONField(default=list)
     missing_keywords = models.JSONField(default=list)
     recommendations = models.JSONField(default=list)
+    education = models.JSONField(default=list)
 
     def __str__(self):
         return f"Resume Analysis for {self.user.username} on {self.analysis_time}"

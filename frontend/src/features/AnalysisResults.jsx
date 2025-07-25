@@ -14,6 +14,7 @@ ChartJS.register(
 );
 
 function AnalysisResults({ analysis }) {
+    console.log('Education data:', analysis.education)
     // Helper functions moved to the top
     const getProgressColor = (score) => {
         if (score >= 90) return '#10b981';
@@ -36,6 +37,7 @@ function AnalysisResults({ analysis }) {
     const rolePredictions = analysisResults?.role_predictions || {};
     const similarityScores = analysisResults?.similarity_scores || {};
     const atsScore = analysis?.ats_score || 0;
+    const education = analysis.education ? JSON.parse(analysis.education) : [];
     
     // ATS Score Doughnut Chart Data
     const atsChartData = {
@@ -195,6 +197,20 @@ function AnalysisResults({ analysis }) {
                         )}
                     </div>
                )}
+
+               {/* Education */}
+                <div className="result-card education">
+                    <h4>Education</h4>
+                    {analysis.education?.length > 0 ? (
+                        <ul className="education-list">
+                            {education.map((edu, i) => (
+                                <li key={i}>{edu}</li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p>No education information found</p>
+                    )}
+                </div>
                  
                 {/* Recommendations */}
                 <div className="result-card recommendations">

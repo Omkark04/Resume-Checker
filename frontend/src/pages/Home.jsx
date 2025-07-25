@@ -1,11 +1,37 @@
-// src/pages/Home.jsx or src/components/Home.jsx
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from "../components/Navbar";
 import '../styles/Home.css';
+import api from '../api'; // Make sure you have this import
 
 const Home = () => {
   const [showScroll, setShowScroll] = useState(false);
+  const [username, setUsername] = useState('');
+  const [analyses, setAnalyses] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        
+        const profileRes = await api.get('/api/user/profile/');
+        setUsername(profileRes.data.username || 'User');
+        
+        const analysesRes = await api.get('/api/resume/analyses/');
+        setAnalyses(analysesRes.data || []);
+      } catch (err) {
+        setError(err.response?.data?.error || 'Failed to fetch data');
+        console.error('Fetch error:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchData();
+  }, []);
 
   // Show scroll-to-top button after scrolling 400px
   useEffect(() => {
@@ -34,7 +60,7 @@ const Home = () => {
       <section className="hero">
         <div className="hero-content">
           <h1 className="hero-title">
-            <span className="highlight">CareerPulse</span>
+            Welcome, <span className="highlight">{username || 'User'}</span> to <span className="highlight">CareerPulse</span>
           </h1>
           <h2 className="hero-subtitle">
             Find Your Dream Job Faster With Intelligent Matching
@@ -68,15 +94,43 @@ const Home = () => {
 
         <div className="features-grid">
           {[
-            { title: "AI-Powered Matching", desc: "Our intelligent algorithm analyzes thousands of jobs to find the perfect matches for your skills and experience." },
-            { title: "Resume Scoring", desc: "Get an instant rating of your resume's strength with detailed feedback on how to improve it." },
-            { title: "Smart Filters", desc: "Automatically filters jobs by experience level, job type, location, and salary range to save you time." },
-            { title: "Match Probability", desc: "See your chances of getting each job with our proprietary scoring system based on employer requirements." },
-            { title: "Improvement Tips", desc: "Personalized suggestions to enhance your skills and make your profile more attractive to employers." },
-            { title: "Download Analysis", desc: "Save your resume analysis and improvement suggestions for future reference and tracking." }
+            { 
+              title: "AI-Powered Matching", 
+              desc: "Our intelligent algorithm analyzes thousands of jobs to find the perfect matches for your skills and experience.",
+              icon: "🤖"
+            },
+            { 
+              title: "Resume Scoring", 
+              desc: "Get an instant rating of your resume's strength with detailed feedback on how to improve it.",
+              icon: "📊"
+            },
+            { 
+              title: "Smart Filters", 
+              desc: "Automatically filters jobs by experience level, job type, location, and salary range to save you time.",
+              icon: "🔍"
+            },
+            { 
+              title: "Match Probability", 
+              desc: "See your chances of getting each job with our proprietary scoring system based on employer requirements.",
+              icon: "📈"
+            },
+            { 
+              title: "Improvement Tips", 
+              desc: "Personalized suggestions to enhance your skills and make your profile more attractive to employers.",
+              icon: "💡"
+            },
+            { 
+              title: "Download Analysis", 
+              desc: "Save your resume analysis and improvement suggestions for future reference and tracking.",
+              icon: "💾"
+            }
           ].map((feature, index) => (
             <div className="feature-card" key={index}>
-              <div className="feature-icon">✨</div>
+              <div className="feature-icon">{feature.icon}</div>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
               <h3>{feature.title}</h3>
               <p>{feature.desc}</p>
             </div>
@@ -97,9 +151,51 @@ const Home = () => {
             { step: "4", title: "See Your Chances & Improve", desc: "Get a probability score for each job and receive personalized suggestions to improve your chances." }
           ].map((item, index) => (
             <div className="step-card" key={index}>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
               <div className="step-number">{item.step}</div>
               <h4>{item.title}</h4>
               <p>{item.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="testimonials">
+        <h2 className="section-title">Success Stories</h2>
+        <p className="section-subtitle">What our users say about CareerPulse</p>
+        
+        <div className="testimonials-grid">
+          {[
+            { 
+              name: "Sarah Johnson", 
+              role: "Software Engineer at Google",
+              quote: "CareerPulse helped me land my dream job in just 2 weeks! The AI matching was spot on.",
+              avatar: "👩‍💻"
+            },
+            { 
+              name: "Michael Chen", 
+              role: "Product Manager at Amazon",
+              quote: "The resume scoring feature gave me actionable insights that improved my response rate by 300%.",
+              avatar: "👨‍💼"
+            },
+            { 
+              name: "Emily Rodriguez", 
+              role: "Data Scientist at Microsoft",
+              quote: "I was getting lost in job boards until CareerPulse showed me exactly which jobs fit my profile.",
+              avatar: "👩‍🔬"
+            }
+          ].map((testimonial, index) => (
+            <div className="testimonial-card" key={index}>
+              <div className="testimonial-avatar">{testimonial.avatar}</div>
+              <p className="testimonial-quote">"{testimonial.quote}"</p>
+              <div className="testimonial-author">
+                <strong>{testimonial.name}</strong>
+                <span>{testimonial.role}</span>
+              </div>
             </div>
           ))}
         </div>

@@ -39,7 +39,7 @@ class ResumeAnalysisSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'resume_file', 'job_description', 
                  'analysis_time', 'parsed_data', 'analysis_results',
                  'ats_score', 'matched_keywords', 'missing_keywords',
-                 'recommendations']
+                 'recommendations','education']
         read_only_fields = ['analysis_time', 'parsed_data', 'analysis_results',
                           'ats_score', 'matched_keywords', 'missing_keywords',
                           'recommendations']

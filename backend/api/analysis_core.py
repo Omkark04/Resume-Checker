@@ -78,7 +78,8 @@ class ResumeAnalysisView(APIView):
                 ats_score=ats_result['score'],
                 matched_keywords=ats_result.get('matched_keywords', []),
                 missing_keywords=ats_result.get('missing_keywords', []),
-                recommendations=ats_result.get('recommendations', [])
+                recommendations=ats_result.get('recommendations', []),
+                education=json.dumps(parsed_info.get('education', []))
             )
             
             os.unlink(tmp_path)

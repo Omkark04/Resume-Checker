@@ -110,7 +110,7 @@
 
 .light #Register {
     background: linear-gradient(135deg, #3b82f6, #2563eb);
-    color: white;
+    color: #2563eb;
     box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
 }
 
@@ -162,6 +162,7 @@
 #Register:hover {
     transform: translateY(-2px);
     box-shadow: 0 5px 20px rgba(30, 64, 175, 0.5);
+    color: white;
 }
 
 #Login:hover::before, #Logout:hover::before, #mobile-logout:hover::before {

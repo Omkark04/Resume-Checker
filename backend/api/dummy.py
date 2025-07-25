@@ -522,6 +522,7 @@ class JobMatchingSystem:
                 "timestamp": datetime.now().isoformat(),
                 "error": "Resume text is empty. Please provide resume content.",
                 "parsed_resume": {}, "similarity_scores": {}, 
+                "education" : [],
                 "role_predictions": {"roles": [], "scores": []}, 
                 "job_suggestions": [], "analysis_summary": "Analysis failed due to empty resume."
             }
@@ -529,6 +530,8 @@ class JobMatchingSystem:
         # Add the full resume text to parsed_data so it can be used later if needed, e.g., by generate_job_suggestions
         parsed_data = self.parse_resume(resume_text)
         parsed_data['full_text'] = resume_text # Store the original resume text
+
+        education = self._extract_education(resume_text)
 
         similarity_scores = {}
         if job_description and job_description.strip():
@@ -544,6 +547,7 @@ class JobMatchingSystem:
             "timestamp": datetime.now().isoformat(),
             "parsed_resume": parsed_data,
             "similarity_scores": similarity_scores,
+            "education": education,
             "role_predictions": role_predictions,
             "job_suggestions": job_suggestions,
             "analysis_summary": f"Analysis completed for {name_for_summary}."
