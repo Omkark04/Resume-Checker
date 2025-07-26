@@ -98,13 +98,14 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'CareerPulse',         # Name of your PostgreSQL DB
-        'USER': 'postgres',    # Replace with your DB username
-        'PASSWORD': '198168',# Replace with your DB password
-        'HOST': 'localhost',           # Or your DB server IP
-        'PORT': '5432',                # Default PostgreSQL port
+        'NAME': 'postgres',             # Default DB name
+        'USER': 'postgres',             # Default username
+        'PASSWORD': '1234',  # Enter the password you set
+        'HOST': 'localhost',            # Local DB
+        'PORT': '5432',                 # Default port
     }
 }
+
 
 
 
