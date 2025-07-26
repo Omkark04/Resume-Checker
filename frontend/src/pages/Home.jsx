@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Navbar from "../components/Navbar";
 import '../styles/Home.css';
 import api from '../api'; // Make sure you have this import
+import Resume from '../assets/Resume1.jpg'
 
 const Home = () => {
   const [showScroll, setShowScroll] = useState(false);
@@ -83,7 +84,7 @@ const Home = () => {
           </div>
         </div>
         <div className="hero-image">
-          <img src="/images/hero-illustration.svg" alt="Career Dashboard" />
+          <img id='Resume'  src={Resume} alt="Resume image" />
         </div>
       </section>
 

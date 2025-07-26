@@ -9,6 +9,7 @@ import ResumeAnalyzer from "./features/ResumeAnalyzer";
 import Chatbot from "./features/Chatbot";
 import News from "./features/News";
 import AnalysisResults from "./features/AnalysisResults";
+import ResumeBuilder from "./features/ResumeBuilder";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path="/notes" element={<Notes />} />
         <Route path="/resume-analysis" element={<AnalysisResults />} />
         <Route path="/news" element={<News />} />
+        <Route path="/resume-builder" element={<ResumeBuilder />} />
         <Route path="/chatbot" element={<Chatbot />} />
       </Routes>
     </BrowserRouter>

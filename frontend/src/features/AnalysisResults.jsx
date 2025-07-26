@@ -2,6 +2,7 @@ import React from 'react';
 import { Chart as ChartJS, ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
 import '../styles/AnalysisResults.css';
+import { Link } from 'react-router-dom';
 
 // Register ChartJS components
 ChartJS.register(
@@ -226,6 +227,7 @@ function AnalysisResults({ analysis }) {
                     )}
                 </div>
             </div>
+            <Link to="/resume-builder" id="Res-Builder">Resume Builder</Link>
         </div>
     );
 }
