@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import api from '../api';
 import AnalysisResults from './AnalysisResults';
 import ErrorBoundary from './ErrorBoundary';
 import '../styles/ResumeAnalyzer.css';
 import Navbar from '../components/Navbar';
+import { useResume } from "../features/ResumeContext";
 
 function ResumeAnalyzer() {
+    const { analysisResult, setAnalysisResult } = useResume();
     const [username, setUsername] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [analyses, setAnalyses] = useState([]);
-    const [analysisResult, setAnalysisResult] = useState(null);
     const [resumeFile, setResumeFile] = useState(null);
     const [jobDescription, setJobDescription] = useState('');
 

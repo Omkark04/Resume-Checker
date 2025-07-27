@@ -10,23 +10,28 @@ import Chatbot from "./features/Chatbot";
 import News from "./features/News";
 import AnalysisResults from "./features/AnalysisResults";
 import ResumeBuilder from "./features/ResumeBuilder";
+import { ResumeProvider } from '../src/features/ResumeContext';
+import ResumeTemplates from "./features/ResumeTemplates";
 
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/logout" element={<Navigate to="/login" />} />
-        <Route path="*" element={<NotFound />} />
-        <Route path="/resume" element={<ResumeAnalyzer />} />
-        <Route path="/notes" element={<Notes />} />
-        <Route path="/resume-analysis" element={<AnalysisResults />} />
-        <Route path="/news" element={<News />} />
-        <Route path="/resume-builder" element={<ResumeBuilder />} />
-        <Route path="/chatbot" element={<Chatbot />} />
-      </Routes>
+      <ResumeProvider>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/logout" element={<Navigate to="/login" />} />
+          <Route path="*" element={<NotFound />} />
+          <Route path="/resume" element={<ResumeAnalyzer />} />
+          <Route path="/notes" element={<Notes />} />
+          <Route path="/resume-analysis" element={<AnalysisResults />} />
+          <Route path="/news" element={<News />} />
+          <Route path="/resume-builder" element={<ResumeBuilder />} />
+          <Route path="/resume-templates" element={<ResumeTemplates />} />
+          <Route path="/chatbot" element={<Chatbot />} />
+        </Routes>
+      </ResumeProvider>
     </BrowserRouter>
   );
 }

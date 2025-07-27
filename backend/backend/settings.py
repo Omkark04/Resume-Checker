@@ -40,7 +40,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=90),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 }
 
@@ -98,9 +98,9 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',             # Default DB name
+        'NAME': 'CareerPulse',             # Default DB name
         'USER': 'postgres',             # Default username
-        'PASSWORD': '1234',  # Enter the password you set
+        'PASSWORD': '198168',  # Enter the password you set
         'HOST': 'localhost',            # Local DB
         'PORT': '5432',                 # Default port
     }

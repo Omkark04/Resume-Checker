@@ -1,235 +1,311 @@
-import React from 'react';
-import { Chart as ChartJS, ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from 'chart.js';
-import { Doughnut } from 'react-chartjs-2';
-import '../styles/AnalysisResults.css';
-import { Link } from 'react-router-dom';
+import { Chart as ChartJS, ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from "chart.js"
+import { Doughnut } from "react-chartjs-2"
+import "../styles/AnalysisResults.css"
+import { Link } from "react-router-dom"
 
-// Register ChartJS components
-ChartJS.register(
-  ArcElement,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  Tooltip,
-  Legend
-);
+ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend)
 
 function AnalysisResults({ analysis }) {
-    console.log('Education data:', analysis.education)
-    // Helper functions moved to the top
-    const getProgressColor = (score) => {
-        if (score >= 90) return '#10b981';
-        if (score >= 80) return '#3b82f6';
-        if (score >= 70) return '#f59e0b';
-        return '#ef4444';
-    };
+  const getProgressColor = (score) => {
+    if (score >= 90) return "#10b981"
+    if (score >= 80) return "#3b82f6"
+    if (score >= 70) return "#f59e0b"
+    return "#ef4444"
+  }
 
-    const getScoreClass = (score) => {
-        if (score >= 90) return 'excellent';
-        if (score >= 80) return 'very-good';
-        if (score >= 70) return 'good';
-        if (score >= 60) return 'fair';
-        return 'poor';
-    };
+  const parsedData = analysis?.parsed_data || {}
+  const analysisResults = analysis?.analysis_results || {}
+  const rolePredictions = analysisResults?.role_predictions || {}
+  const similarityScores = analysisResults?.similarity_scores || {}
+  const atsScore = analysis?.ats_score || 0
+  const education = analysis.education ? JSON.parse(analysis.education) : []
+  const recommendations = analysis.recommendations || []
 
-    // Data extraction
-    const parsedData = analysis?.parsed_data || {};
-    const analysisResults = analysis?.analysis_results || {};
-    const rolePredictions = analysisResults?.role_predictions || {};
-    const similarityScores = analysisResults?.similarity_scores || {};
-    const atsScore = analysis?.ats_score || 0;
-    const education = analysis.education ? JSON.parse(analysis.education) : [];
-    
-    // ATS Score Doughnut Chart Data
-    const atsChartData = {
-        datasets: [{
-            data: [atsScore, 100 - atsScore],
-            backgroundColor: [
-                getProgressColor(atsScore),
-                'rgba(200, 200, 200, 0.1)'
-            ],
-            borderWidth: 0,
-            cutout: '70%'
-        }]
-    };
+  const processedEducation = education.map((edu) => {
+    if (typeof edu === "string") {
+      const collegeMatch = edu.match(/^(.*?)(?=\d{4}|$)/)
+      const college = collegeMatch ? collegeMatch[0].trim() : "Not specified"
 
-    // Chart options
-    const atsDoughnutOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                display: false
-            },
-            tooltip: {
-                enabled: false
-            }
-        },
-        cutout: '70%'
-    };
+      const yearMatch = edu.match(/(\d{4}\s*(?:-|to)\s*\d{4})/)
+      const years = yearMatch ? yearMatch[0] : "Not specified"
 
-    return (
-        <div className="analysis-results">
-            <h3>Analysis Results</h3>
-            
-            <div className="results-grid">
-                {/* Personal Info */}
-                <div className="result-card personal-info">
-                    <h4>Personal Information</h4>
-                    <p><strong>Name:</strong> {parsedData.name || 'Not provided'}</p>
-                    <p><strong>Email:</strong> {parsedData.email || 'Not provided'}</p>
-                    <p><strong>Phone:</strong> {parsedData.phone || 'Not provided'}</p>
-                </div>
-                
-                {/* ATS Score */}
-                <div className="result-card ats-score">
-                    <h4>ATS Compatibility Score</h4>
-                    <div className="ats-score-container">
-                        <div className="ats-doughnut-chart">
-                            <Doughnut data={atsChartData} options={atsDoughnutOptions} />
-                            <div className="ats-score-overlay">
-                                <span className="score-value">{atsScore.toFixed(1)}</span>
-                                <span className="score-label">/ 100</span>
-                            </div>
-                        </div>
-                        <div className={`score-description ${getScoreClass(atsScore)}`}>
-                            {atsScore >= 90 ? 'Excellent' : 
-                             atsScore >= 80 ? 'Very Good' :
-                             atsScore >= 70 ? 'Good' :
-                             atsScore >= 60 ? 'Fair' : 'Needs Improvement'}
-                        </div>
-                    </div>
-                </div>
-                
-                {/* Skills */}
-                <div className="result-card skills">
-                    <h4>Top Skills</h4>
-                    {parsedData.skills?.length ? (
-                        <>
-                            <div className="skills-list">
-                                {parsedData.skills.slice(0, 10).map((skill, i) => (
-                                    <span key={i} className="skill-badge">{skill}</span>
-                                ))}
-                            </div>
-                        </>
-                    ) : (
-                        <p>No skills identified</p>
-                    )}
-                </div>
-                
-                {/* Role Predictions with Progress Bars */}
-                <div className="result-card roles">
-                    <h4>Role Predictions</h4>
-                    {rolePredictions.roles?.length ? (
-                        <>
-                            <ul className="role-list">
-                                {rolePredictions.roles.map((role, i) => {
-                                    const score = rolePredictions.scores?.[i] || 0;
-                                    return (
-                                        <li key={i}>
-                                            <div className="role-info">
-                                                <span className="role-name">{role}</span>
-                                                <span className="role-score">{score.toFixed(1)}%</span>
-                                            </div>
-                                            <div 
-                                                className="progress-container" 
-                                                role="progressbar"
-                                                aria-valuenow={score}
-                                                aria-valuemin="0"
-                                                aria-valuemax="100"
-                                            >
-                                                <div 
-                                                    className="progress-bar"
-                                                    style={{
-                                                        width: `${score}%`,
-                                                        backgroundColor: getProgressColor(score)
-                                                    }}
-                                                ></div>
-                                            </div>
-                                        </li>
-                                    );
-                                })}
-                            </ul>
-                        </>
-                    ) : (
-                        <p>No role predictions available</p>
-                    )}
-                </div>
-              
-                {/* JD Matching (if available) */}
-                {analysis.job_description && (
-                    <div className="result-card jd-matching">
-                        <h4>Job Description Matching</h4>
-                        {similarityScores.combined_score ? (
-                            <>
-                                <div className="match-score">
-                                    <span className="score-label">Overall Match:</span>
-                                    <span className="score-value">{similarityScores.combined_score.toFixed(1)}%</span>
-                                </div>
-                                <div className="match-details">
-                                    <p><strong>Content Match:</strong> {(similarityScores.tfidf_similarity || 0).toFixed(1)}%</p>
-                                    <p><strong>Keyword Match:</strong> {(similarityScores.keyword_similarity || 0).toFixed(1)}%</p>
-                                </div>
-                                
-                                {analysis.matched_keywords?.length > 0 && (
-                                    <div className="keywords-section">
-                                        <h5>Matched Keywords</h5>
-                                        <div className="keywords-list">
-                                            {analysis.matched_keywords.slice(0, 5).map((kw, i) => (
-                                                <span key={i} className="keyword matched">{kw}</span>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-                                
-                                {analysis.missing_keywords?.length > 0 && (
-                                    <div className="keywords-section">
-                                        <h5>Missing Keywords</h5>
-                                        <div className="keywords-list">
-                                            {analysis.missing_keywords.slice(0, 5).map((kw, i) => (
-                                                <span key={i} className="keyword missing">{kw}</span>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-                            </>
-                        ) : (
-                            <p>No matching analysis available</p>
-                        )}
-                    </div>
-               )}
+      const degreeMatch = edu.match(/$$(.*?)$$/)
+      const degree = degreeMatch ? degreeMatch[1] : "Not specified"
 
-               {/* Education */}
-                <div className="result-card education">
-                    <h4>Education</h4>
-                    {analysis.education?.length > 0 ? (
-                        <ul className="education-list">
-                            {education.map((edu, i) => (
-                                <li key={i}>{edu}</li>
-                            ))}
-                        </ul>
-                    ) : (
-                        <p>No education information found</p>
-                    )}
-                </div>
-                 
-                {/* Recommendations */}
-                <div className="result-card recommendations">
-                    <h4>Recommendations</h4>
-                    {analysis.recommendations?.length ? (
-                        <ul>
-                            {analysis.recommendations.slice(0, 5).map((rec, i) => (
-                                <li key={i}>{rec}</li>
-                            ))}
-                        </ul>
-                    ) : (
-                        <p>No specific recommendations</p>
-                    )}
-                </div>
-            </div>
-            <Link to="/resume-builder" id="Res-Builder">Resume Builder</Link>
+      const scoreMatch = edu.match(/(?:CGPA|GPA|Score)[^\d]*(\d+\.?\d*)/i)
+      const score = scoreMatch ? `CGPA ${scoreMatch[1]}` : "Not specified"
+
+      return { college, years, degree, score }
+    }
+    return edu
+  })
+
+  const atsChartData = {
+    datasets: [
+      {
+        data: [atsScore, 100 - atsScore],
+        backgroundColor: ["#3b82f6", "#e5e7eb"],
+        borderWidth: 0,
+        cutout: "70%",
+      },
+    ],
+  }
+
+  const atsDoughnutOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { enabled: false } },
+    cutout: "70%",
+  }
+
+  return (
+    <div className="analysis-dashboard">
+      <div className="analysis-content">
+        <div className="header-section">
+          <h1>Resume Analysis Dashboard</h1>
         </div>
-    );
+
+        <div className="candidate-overview">
+          <div className="candidate-card">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <h2>Candidate Profile</h2>
+            <div className="candidate-details">
+              <h3>{parsedData.name || "Not provided"}</h3>
+              <p className="top-role">{rolePredictions.roles?.[0] || "Role not predicted"}</p>
+              <div className="match-score">
+                <span>JD Match</span>
+                <span className="score-value">{similarityScores.combined_score?.toFixed(1) || 0}%</span>
+              </div>
+              <div className="skills-count">
+                <span>Skills Found</span>
+                <span className="count-value">{parsedData.skills?.length || 0}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="ats-score-card">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <h3>ATS Compatibility Score</h3>
+            <div className="ats-score-container">
+              <div className="ats-doughnut-chart">
+                <Doughnut data={atsChartData} options={atsDoughnutOptions} />
+                <div className="ats-score-overlay">
+                  <span className="score-value">{atsScore.toFixed(1)}</span>
+                  <span className="score-label">/ 100</span>
+                </div>
+              </div>
+              <div className="score-description">
+                {atsScore >= 90
+                  ? "Excellent"
+                  : atsScore >= 80
+                    ? "Very Good"
+                    : atsScore >= 70
+                      ? "Good"
+                      : atsScore >= 60
+                        ? "Fair"
+                        : "Needs Improvement"}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="analysis-sections">
+          <div className="main-section">
+            <div className="personal-info-section">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <h3>Personal Information</h3>
+              <div className="info-grid">
+                <div>
+                  <label>Full Name</label>
+                  <p>{parsedData.name || "Not provided"}</p>
+                </div>
+                <div>
+                  <label>Email Address</label>
+                  <p>{parsedData.email || "Not provided"}</p>
+                </div>
+                <div>
+                  <label>Phone Number</label>
+                  <p>{parsedData.phone || "Not provided"}</p>
+                </div>
+                <div>
+                  <label>LinkedIn</label>
+                  <p>{parsedData.linkedin || "Not mentioned"}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="score-breakdown-section">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <h3>Score Breakdown</h3>
+              <div className="vertical-score-breakdown">
+                {[
+                  { label: "Contact Info", value: 3.0 },
+                  { label: "Experience & Education", value: 16.0 },
+                  { label: "Skills & Keywords", value: 16.6 },
+                  { label: "Formatting & Structure", value: 12.0 },
+                  { label: "Achievements", value: 10.0 },
+                  { label: "Customization", value: 2.8 },
+                ].map((item, index) => (
+                  <div key={index} className="score-item">
+                    <div className="score-label">
+                      <span>{item.label}</span>
+                      <span className="score-value">{item.value}</span>
+                    </div>
+                    <div className="progress-container">
+                      <div
+                        className="progress-bar"
+                        style={{
+                          width: `${(item.value / 20) * 100}%`,
+                          backgroundColor: getProgressColor(item.value * 5),
+                        }}
+                      ></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="role-predictions-section">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <h3>AI-Powered Role Predictions</h3>
+              <div className="role-predictions">
+                {rolePredictions.roles?.map((role, i) => {
+                  const score = rolePredictions.scores?.[i] || 0
+                  return (
+                    <div key={i} className="role-item">
+                      <div className="role-info">
+                        <span className="role-name">{role}</span>
+                        <span className="role-score">{score.toFixed(1)}%</span>
+                      </div>
+                      <div className="progress-container">
+                        <div
+                          className="progress-bar"
+                          style={{
+                            width: `${score}%`,
+                            backgroundColor: getProgressColor(score),
+                          }}
+                        ></div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          </div>
+
+          <div className="sidebar-section">
+            <div className="education-section">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <h3>Education</h3>
+              {processedEducation.length > 0 ? (
+                <ul className="education-list">
+                  {processedEducation.map((edu, i) => (
+                    <li key={i}>
+                      <p className="institution">{edu.college}</p>
+                      <p className="years">{edu.years}</p>
+                      <p className="degree">{edu.degree}</p>
+                      <p className="score">{edu.score}</p>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No education information found</p>
+              )}
+            </div>
+
+            <div className="recommendations-section">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <h3>Recommendations</h3>
+              <ul>
+                {recommendations.slice(0, 5).map((rec, i) => (
+                  <li key={i}>{rec}</li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="skills">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <h4>Top Skills</h4>
+              {parsedData.skills?.length ? (
+                <div className="skills-container">
+                  <div className="skills-list">
+                    {parsedData.skills.slice(0, 10).map((skill, i) => (
+                      <span key={i} className="skill-badge">
+                        {skill}
+                        <span className="skill-index">{i + 1}</span>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <p className="no-skills">No skills identified</p>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className="next-steps">
+          <h3>Recommended Next Steps</h3>
+          <div className="steps-grid">
+            <div className="step-card">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <h4>Quantify Achievements</h4>
+              <p>
+                Add specific metrics and numbers to your experience section to make your accomplishments more impactful
+              </p>
+            </div>
+            <div className="step-card">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <h4>Emphasize Transferable Skills</h4>
+              <p>Highlight skills that apply across different roles and industries to increase your versatility</p>
+            </div>
+            <div className="step-card">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <h4>Download Resources</h4>
+              <p>Get our comprehensive resume templates and professional guides to enhance your application</p>
+            </div>
+          </div>
+        </div>
+
+        <Link to="/resume-builder" className="resume-builder-link">
+          Build Enhanced Resume
+        </Link>
+      </div>
+    </div>
+  )
 }
 
-export default AnalysisResults;
+export default AnalysisResults
