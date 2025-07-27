@@ -1,0 +1,348 @@
+/* src/styles/ModernNews.css */
+.news-dashboard {
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+  min-height: 100vh;
+  padding-bottom: 2rem;
+}
+
+.news-header {
+  background: linear-gradient(90deg, #1a2a6c, #2a5298);
+  color: white;
+  padding: 2rem;
+  border-radius: 0 0 20px 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.headline {
+  font-size: 2.8rem;
+  margin-bottom: 0.5rem;
+  position: relative;
+}
+
+.pulse-glow {
+  display: inline-block;
+  animation: pulse 2s infinite;
+  margin-right: 12px;
+}
+
+.subheadline {
+  font-weight: 300;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  opacity: 0.9;
+}
+
+.description {
+  max-width: 600px;
+  font-size: 1.1rem;
+  opacity: 0.85;
+  line-height: 1.6;
+}
+
+.modern-button {
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 50px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modern-button:hover:not(:disabled) {
+  background: rgba(255,255,255,0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.modern-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.modern-tabs {
+  display: flex;
+  gap: 12px;
+  padding: 0 2rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.tab-btn {
+  background: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 50px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.tab-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+.tab-btn.active {
+  background: #2a5298;
+  color: white;
+}
+
+.modern-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+  padding: 0 2rem;
+}
+
+.modern-card {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.modern-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+}
+
+.card-image-container {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+}
+
+.card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.card-image-container:hover .card-image {
+  transform: scale(1.05);
+}
+
+.image-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+  padding: 1rem;
+}
+
+.source-badge {
+  background: rgba(255,255,255,0.9);
+  color: #2a5298;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.card-body {
+  padding: 1.5rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.card-title {
+  font-size: 1.3rem;
+  margin-bottom: 0.8rem;
+  line-height: 1.4;
+  color: #222;
+}
+
+.card-desc {
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  flex-grow: 1;
+}
+
+.card-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.read-more {
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.bookmark-btn {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.bookmark-btn:hover {
+  transform: scale(1.2);
+}
+
+/* Animations */
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out;
+}
+
+.animate-fade-in-delay {
+  animation: fadeIn 1s ease-out 0.3s both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-slide-up {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: slideUp 0.6s forwards;
+}
+
+@keyframes slideUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Loading Skeleton */
+.skeleton-card {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.skeleton-image {
+  height: 200px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.skeleton-body {
+  padding: 1.5rem;
+}
+
+.skeleton-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.skeleton-source, .skeleton-date {
+  height: 16px;
+  background: #e0e0e0;
+  border-radius: 4px;
+}
+
+.skeleton-title {
+  height: 24px;
+  background: #e0e0e0;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  width: 80%;
+}
+
+.skeleton-desc {
+  height: 16px;
+  background: #e0e0e0;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.skeleton-desc:last-child {
+  width: 60%;
+}
+
+.skeleton-link {
+  height: 16px;
+  background: #e0e0e0;
+  border-radius: 4px;
+  width: 40%;
+  margin-top: 1rem;
+}
+
+.shimmer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Empty State */
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem 2rem;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.3;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .news-header {
+    padding: 1.5rem;
+  }
+  
+  .headline {
+    font-size: 2.2rem;
+  }
+  
+  .modern-grid {
+    grid-template-columns: 1fr;
+    padding: 0 1rem;
+  }
+  
+  .modern-tabs {
+    padding: 0 1rem;
+  }
+  
+  .tab-btn {
+    padding: 10px 16px;
+    font-size: 0.9rem;
+  }
+}
