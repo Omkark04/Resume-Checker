@@ -1,92 +1,114 @@
-.analysis-dashboard {
+/* AnalysisResults.css - Modern, Vibrant, Grid Layout */
+
+.analysis-results-modern {
   min-height: 100vh;
-  width: 100%;
-  transition: background-color 0.3s ease;
+  background: var(--bg-gradient);
+  color: var(--text-color);
+  font-family: 'Poppins', sans-serif;
+  transition: background 0.4s ease;
 }
 
-.analysis-dashboard.light {
-  background-color: #f8fafc;
-  color: #1e293b;
+/* Theme Variables */
+.home-container.light .analysis-results-modern {
+  --bg-gradient: linear-gradient(135deg, #f8f9ff 0%, #e3f2fd 50%, #f3e5f5 100%);
+  --text-color: #2c3e50;
+  --card-bg: white;
+  --border-color: #e0e7ff;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  --btn-bg: #4f46e5;
+  --hover-glow: rgba(79, 70, 229, 0.1);
+  --glow-color: rgba(79, 70, 229, 0.2);
 }
 
-.analysis-dashboard.dark {
-  background-color: #0f172a;
-  color: #f8fafc;
+.home-container.dark .analysis-results-modern {
+  --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #1e1b4b 100%);
+  --text-color: #e2e8f0;
+  --card-bg: #1e293b;
+  --border-color: #334155;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  --btn-bg: #8b5cf6;
+  --hover-glow: rgba(139, 92, 246, 0.1);
+  --glow-color: rgba(139, 92, 246, 0.3);
 }
 
-.analysis-content {
-  width: 100%;
-  max-width: none;
-  padding: 2rem 1rem;
-  margin: 0 auto;
-  border-radius: 16px;
-  border: 1px solid;
+/* Header */
+.results-header {
+  padding: 60px 5%;
+  text-align: center;
 }
 
-.analysis-dashboard.light .analysis-content {
-  border-color: #e2e8f0;
-  background-color: rgba(255, 255, 255, 0.5);
+.results-header h2 {
+  font-size: 2.8rem;
+  margin: 0 0 10px 0;
+  font-weight: 700;
+  background: linear-gradient(90deg, #4f46e5, #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-.analysis-dashboard.dark .analysis-content {
-  border-color: #334155;
-  background-color: rgba(30, 41, 59, 0.5);
+.results-header p.subtitle {
+  font-size: 1.4rem;
+  margin: 0;
+  opacity: 0.9;
 }
 
-/* Header Section */
-.header-section {
-  margin-bottom: 2rem;
-  padding: 0 1rem;
-}
-
-.header-section h1 {
-  font-size: 2rem;
-  font-weight: 800;
-  margin-bottom: 0.5rem;
-}
-
-/* Candidate Overview */
-.candidate-overview {
+/* Results Grid */
+.results-grid-modern {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-  padding: 0 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  padding: 0 5%;
+  margin-top: 20px;
 }
 
-.candidate-card,
-.ats-score-card {
-  border-radius: 12px;
-  padding: 1.5rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border: 1px solid;
+.card {
+  background: var(--card-bg);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+  position: relative;
+  transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1.5);
 }
 
-.analysis-dashboard.light .candidate-card,
-.analysis-dashboard.light .ats-score-card {
-  background-color: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  border-color: #e2e8f0;
+.card::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border-radius: 20px;
+  background: linear-gradient(45deg, #4f46e5, #ec4899, #06b6d4, #8b5cf6, #4f46e5);
+  background-size: 400% 400%;
+  animation: gradientBorder 8s linear infinite;
+  z-index: -1;
+  pointer-events: none;
 }
 
-.analysis-dashboard.dark .candidate-card,
-.analysis-dashboard.dark .ats-score-card {
-  background-color: #1e293b;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  border-color: #334155;
+@keyframes gradientBorder {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
-.candidate-card:hover,
-.ats-score-card:hover {
-  transform: translateY(-2px);
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 25px 60px var(--glow-color);
 }
 
-.analysis-dashboard.light .candidate-card:hover,
-.analysis-dashboard.light .ats-score-card:hover {
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-  border-color: #cbd5e1;
+.card h4 {
+  font-size: 1.4rem;
+  margin: 0 0 16px 0;
+  font-weight: 700;
 }
 
+.card p {
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
 .analysis-dashboard.dark .candidate-card:hover,
 .analysis-dashboard.dark .ats-score-card:hover {
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
@@ -100,90 +122,46 @@
   margin-bottom: 1rem;
 }
 
-.analysis-dashboard.light .candidate-card h2,
-.analysis-dashboard.light .ats-score-card h3 {
-  color: #1e293b;
+.card ul {
+  list-style: none;
+  padding: 0;
 }
 
-.analysis-dashboard.dark .candidate-card h2,
-.analysis-dashboard.dark .ats-score-card h3 {
-  color: #f8fafc;
+.card li {
+  margin-bottom: 12px;
 }
 
-.candidate-details h3 {
-  font-size: 1.5rem;
+.card img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Personal Info Card */
+.personal-info {
+  padding: 24px;
+}
+
+.personal-info .info-item {
+  margin-bottom: 12px;
+}
+
+.personal-info strong {
   font-weight: 600;
-  margin-bottom: 0.5rem;
-}
-
-.top-role {
-  font-size: 1rem;
-  margin-bottom: 1rem;
-  opacity: 0.8;
-}
-
-.analysis-dashboard.light .top-role {
-  color: #475569;
-}
-
-.analysis-dashboard.dark .top-role {
-  color: #94a3b8;
-}
-
-.match-score,
-.skills-count {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.75rem 0;
-  border-bottom: 1px solid;
-}
-
-.analysis-dashboard.light .match-score,
-.analysis-dashboard.light .skills-count {
-  border-color: #e2e8f0;
-}
-
-.analysis-dashboard.dark .match-score,
-.analysis-dashboard.dark .skills-count {
-  border-color: #334155;
-}
-
-.skills-count {
-  border-bottom: none;
-}
-
-.score-value,
-.count-value {
-  font-weight: 700;
-  font-size: 1.125rem;
-}
-
-.analysis-dashboard.light .score-value,
-.analysis-dashboard.light .count-value {
-  color: #2563eb;
-}
-
-.analysis-dashboard.dark .score-value,
-.analysis-dashboard.dark .count-value {
-  color: #60a5fa;
 }
 
 /* ATS Score Card */
-.ats-score-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
+.ats-score-card {
+  padding: 24px;
 }
 
-.ats-doughnut-chart {
+.doughnut-container {
   position: relative;
-  width: 120px;
-  height: 120px;
+  width: 100%;
+  height: 200px;
+  margin-bottom: 20px;
 }
 
-.ats-score-overlay {
+.score-overlay {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -191,92 +169,60 @@
   text-align: center;
 }
 
-.ats-score-overlay .score-value {
-  display: block;
-  font-size: 1.5rem;
-  font-weight: 800;
+.big-score {
+  font-size: 2.4rem;
+  font-weight: bold;
+  margin-bottom: 4px;
 }
 
-.ats-score-overlay .score-label {
-  font-size: 0.875rem;
-  opacity: 0.7;
+.score-out-of {
+  font-size: 1.2rem;
 }
 
-.score-description {
-  font-weight: 600;
-  font-size: 1rem;
-}
-
-/* Analysis Sections */
-.analysis-sections {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
-  margin-bottom: 2rem;
-  padding: 0 1rem;
-}
-
-.main-section,
-.sidebar-section {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-/* Section Cards */
-.personal-info-section,
-.score-breakdown-section,
-.role-predictions-section,
-.education-section,
-.recommendations-section,
-.skills {
+.score-badge {
+  display: inline-block;
+  padding: 8px 16px;
   border-radius: 12px;
-  padding: 1.5rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border: 1px solid;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-top: 12px;
+  transition: all 0.3s ease;
 }
 
-.analysis-dashboard.light .personal-info-section,
-.analysis-dashboard.light .score-breakdown-section,
-.analysis-dashboard.light .role-predictions-section,
-.analysis-dashboard.light .education-section,
-.analysis-dashboard.light .recommendations-section,
-.analysis-dashboard.light .skills {
-  background-color: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  border-color: #e2e8f0;
+.excellent {
+  background: #10b981;
+  color: white;
 }
 
-.analysis-dashboard.dark .personal-info-section,
-.analysis-dashboard.dark .score-breakdown-section,
-.analysis-dashboard.dark .role-predictions-section,
-.analysis-dashboard.dark .education-section,
-.analysis-dashboard.dark .recommendations-section,
-.analysis-dashboard.dark .skills {
-  background-color: #1e293b;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  border-color: #334155;
+.very-good {
+  background: #3b82f6;
+  color: white;
 }
 
-.personal-info-section:hover,
-.score-breakdown-section:hover,
-.role-predictions-section:hover,
-.education-section:hover,
-.recommendations-section:hover,
-.skills:hover {
-  transform: translateY(-2px);
+.good {
+  background: #f59e0b;
+  color: black;
 }
 
-.analysis-dashboard.light .personal-info-section:hover,
-.analysis-dashboard.light .score-breakdown-section:hover,
-.analysis-dashboard.light .role-predictions-section:hover,
-.analysis-dashboard.light .education-section:hover,
-.analysis-dashboard.light .recommendations-section:hover,
-.analysis-dashboard.light .skills:hover {
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-  border-color: #cbd5e1;
+.fair {
+  background: #f59e0b;
+  color: black;
 }
 
+.poor {
+  background: #ef4444;
+  color: white;
+}
+
+/* Skills Card */
+.skills-card {
+  padding: 24px;
+}
+.skills-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
 .analysis-dashboard.dark .personal-info-section:hover,
 .analysis-dashboard.dark .score-breakdown-section:hover,
 .analysis-dashboard.dark .role-predictions-section:hover,
@@ -286,6 +232,7 @@
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
   border-color: #475569;
 }
+
 
 .personal-info-section h3,
 .score-breakdown-section h3,
@@ -317,8 +264,23 @@
 .analysis-dashboard.light .info-grid div {
   background-color: #f8fafc;
   border-color: #e2e8f0;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
+.chip {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 12px;
+.skill {
+  background: #e0e7ff;
+  color: #2c3e50;
+}
+.analysis-dashboard.dark .info-grid div {
+  background-color: #0f172a;
+  border-color: #334155;
+}
+  color: #2c3e50;
 .analysis-dashboard.dark .info-grid div {
   background-color: #0f172a;
   border-color: #334155;
@@ -350,12 +312,6 @@
   gap: 1rem;
 }
 
-.score-item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
 .score-label {
   display: flex;
   justify-content: space-between;
@@ -363,430 +319,221 @@
   font-size: 0.9375rem;
   font-weight: 500;
 }
-
-.progress-container {
-  width: 100%;
-  height: 8px;
-  border-radius: 4px;
-  overflow: hidden;
+ /* Role Predictions Card */
+.roles-card {
+  padding: 24px;
+}
+  font-size: 0.9375rem;
+  font-weight: 500;
+/* Role Predictions Card */
+.roles-card {
+  padding: 24px;
 }
 
-.analysis-dashboard.light .progress-container {
-  background-color: #e2e8f0;
-}
-
-.analysis-dashboard.dark .progress-container {
-  background-color: #334155;
-}
-
-.progress-bar {
-  height: 100%;
-  border-radius: 4px;
-  transition: width 0.8s ease;
-}
-
-/* Role Predictions */
-.role-predictions {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+.role-progress-list {
+  list-style: none;
+  padding: 0;
 }
 
 .role-item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  margin-bottom: 16px;
 }
 
-.role-info {
+.role-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 8px;
 }
 
-.role-name {
-  font-weight: 500;
-  font-size: 0.9375rem;
-}
-
-.role-score {
-  font-weight: 700;
-  font-size: 0.9375rem;
-}
-
-.analysis-dashboard.light .role-score {
-  color: #2563eb;
-}
-
-.analysis-dashboard.dark .role-score {
-  color: #60a5fa;
-}
-
-/* Education */
-.education-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.education-list li {
-  padding: 1rem;
-  border-radius: 8px;
-  border-left: 4px solid;
-}
-
-.analysis-dashboard.light .education-list li {
-  background-color: #f8fafc;
-  border-color: #2563eb;
-}
-
-.analysis-dashboard.dark .education-list li {
-  background-color: #0f172a;
-  border-color: #60a5fa;
-}
-
-.institution {
+.role-title {
+  font-size: 1.1rem;
   font-weight: 600;
-  font-size: 1rem;
-  margin-bottom: 0.25rem;
 }
 
-.years,
-.degree,
-.score {
-  font-size: 0.875rem;
-  margin-bottom: 0.25rem;
-  opacity: 0.8;
+.role-pct {
+  font-size: 1.1rem;
+  font-weight: 600;
 }
 
-.analysis-dashboard.light .years,
-.analysis-dashboard.light .degree,
-.analysis-dashboard.light .score {
-  color: #475569;
+.progress-track {
+  width: 100%;
+  height: 12px;
+  background: #e0e7ff;
+  border-radius: 6px;
+  overflow: hidden;
 }
 
-.analysis-dashboard.dark .years,
-.analysis-dashboard.dark .degree,
-.analysis-dashboard.dark .score {
-  color: #94a3b8;
+.progress-fill {
+  height: 100%;
+  background: currentColor;
+  transition: width 0.3s ease;
 }
 
-/* Recommendations */
-.recommendations-section ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+/* Job Matching Card */
+.jd-matching-card {
+  padding: 24px;
+}
+
+.match-score-large {
+  font-size: 2.4rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.match-details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.detail {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 4px;
 }
 
-.recommendations-section li {
-  padding: 0.75rem;
-  border-radius: 6px;
-  font-size: 0.9375rem;
-  line-height: 1.5;
-  border-left: 3px solid;
+.detail small {
+  font-size: 0.9rem;
+  font-weight: 500;
 }
 
-.analysis-dashboard.light .recommendations-section li {
-  background-color: #f1f5f9;
-  border-color: #10b981;
-  color: #1e293b;
+.detail b {
+  font-size: 1.1rem;
+  font-weight: 600;
 }
 
-.analysis-dashboard.dark .recommendations-section li {
-  background-color: #1e293b;
-  border-color: #34d399;
-  color: #f8fafc;
+.keywords-section {
+  margin-top: 20px;
 }
 
-/* Skills */
-.skills-container {
-  width: 100%;
-}
-
-.skills-list {
+.keywords-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 8px;
 }
 
-.skill-badge {
-  display: inline-flex;
+.matched {
+  background: #10b981;
+  color: white;
+}
+
+.missing {
+  background: #ef4444;
+  color: white;
+}
+
+/* Education Card */
+.education-card {
+  padding: 24px;
+}
+
+.edu-item {
+  display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  border-radius: 20px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  transition: transform 0.2s ease;
-  position: relative;
+  gap: 12px;
+  margin-bottom: 8px;
 }
 
-.analysis-dashboard.light .skill-badge {
-  background-color: #e0f2fe;
-  color: #0369a1;
-  border: 1px solid #bae6fd;
-}
-
-.analysis-dashboard.dark .skill-badge {
-  background-color: #1e3a8a;
-  color: #bfdbfe;
-  border: 1px solid #3b82f6;
-}
-
-.skill-badge:hover {
-  transform: translateY(-1px);
-}
-
-.skill-index {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 18px;
-  height: 18px;
+.edu-bullet {
+  width: 12px;
+  height: 12px;
+  background: var(--btn-bg);
   border-radius: 50%;
-  font-size: 0.75rem;
-  font-weight: 600;
 }
 
-.analysis-dashboard.light .skill-index {
-  background-color: #0369a1;
-  color: white;
+/* Recommendations Card */
+.recommendations-card {
+  padding: 24px;
 }
 
-.analysis-dashboard.dark .skill-index {
-  background-color: #60a5fa;
-  color: #1e293b;
+.recommendations-list {
+  list-style: none;
+  padding: 0;
 }
 
-.no-skills {
-  font-style: italic;
-  opacity: 0.7;
+.rec-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
 }
 
-/* Next Steps */
-.next-steps {
-  margin-bottom: 2rem;
-  padding: 0 1rem;
+/* CTA Section */
+.cta-section {
+  text-align: center;
+  margin-top: 40px;
 }
 
-.next-steps h3 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-bottom: 1.5rem;
-}
-
-.steps-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
-}
-
-.step-card {
-  padding: 1.5rem;
+.btn-primary {
+  padding: 14px 28px;
+  font-size: 1.1rem;
   border-radius: 12px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.analysis-dashboard.light .step-card {
-  background-color: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  border-color: #e2e8f0;
-}
-
-.analysis-dashboard.dark .step-card {
-  background-color: #1e293b;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  border-color: #334155;
-}
-
-.step-card:hover {
-  transform: translateY(-2px);
-}
-
-.analysis-dashboard.light .step-card:hover {
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-  border-color: #cbd5e1;
-}
-
-.analysis-dashboard.dark .step-card:hover {
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-  border-color: #475569;
-}
-
-.step-card h4 {
-  font-size: 1.125rem;
   font-weight: 600;
-  margin-bottom: 0.5rem;
-}
-
-.step-card p {
-  font-size: 0.9375rem;
-  opacity: 0.8;
-  line-height: 1.5;
-}
-
-.analysis-dashboard.light .step-card p {
-  color: #475569;
-}
-
-.analysis-dashboard.dark .step-card p {
-  color: #94a3b8;
-}
-
-/* Resume Builder Link */
-.resume-builder-link {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
   display: inline-flex;
   align-items: center;
-  padding: 1rem 2rem;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 1rem;
-  text-decoration: none;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #4f46e5, #ec4899) border-box;
+  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude;
   transition: all 0.3s ease;
-  margin: 0 1rem;
+  z-index: -1;
 }
 
-.analysis-dashboard.light .resume-builder-link {
-  background-color: #2563eb;
+.btn-primary {
+  background: linear-gradient(to right, blue, #ec4899);
   color: white;
+  border: none;
 }
 
-.analysis-dashboard.dark .resume-builder-link {
-  background-color: #1e40af;
-  color: white;
+.btn-primary:hover {
+  transform: translateY(-3px);
 }
 
-.resume-builder-link:hover {
-  transform: translateY(-2px);
-  opacity: 0.9;
+.btn-primary:hover::before {
+  transform: scale(1.05);
+  opacity: 1;
 }
 
-/* Responsive Design */
-@media (min-width: 640px) {
-  .info-grid {
-    grid-template-columns: repeat(2, 1fr);
+/* Responsive */
+@media (max-width: 768px) {
+  .results-grid-modern {
+    grid-template-columns: 1fr;
   }
 
-  .steps-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (min-width: 768px) {
-  .candidate-overview {
-    grid-template-columns: 2fr 1fr;
-    padding: 0 2rem;
+  .results-header h2 {
+    font-size: 2.4rem;
   }
 
-  .analysis-sections {
-    grid-template-columns: 2fr 1fr;
-    padding: 0 2rem;
-  }
-
-  .header-section {
-    padding: 0 2rem;
-  }
-
-  .next-steps {
-    padding: 0 2rem;
-  }
-
-  .resume-builder-link {
-    margin: 0 2rem;
-  }
-
-  .steps-grid {
-    grid-template-columns: repeat(3, 1fr);
+  .results-header p.subtitle {
+    font-size: 1.2rem;
   }
 }
 
-@media (min-width: 1024px) {
-  .analysis-content {
-    padding: 2rem;
+@media (max-width: 480px) {
+  .results-header h2 {
+    font-size: 2.2rem;
   }
 
-  .ats-score-container {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
+  .card h4 {
+    font-size: 1.2rem;
   }
-
-  .ats-doughnut-chart {
-    width: 140px;
-    height: 140px;
-  }
-
-  .ats-score-overlay .score-value {
-    font-size: 1.75rem;
-  }
-}
-
-@media (min-width: 1280px) {
-  .analysis-content {
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-}
-
-/* Animation for progress bars */
-@keyframes progressAnimation {
-  from {
-    width: 0%;
-  }
-  to {
-    width: var(--target-width);
-  }
-}
-
-.progress-bar {
-  animation: progressAnimation 1s ease-out;
-}
-
-/* Smooth transitions for theme switching */
-* {
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-}
-
-.candidate-card:hover,
-.ats-score-card:hover,
-.personal-info-section:hover,
-.score-breakdown-section:hover,
-.role-predictions-section:hover,
-.education-section:hover,
-.recommendations-section:hover,
-.skills:hover,
-.step-card:hover {
-  transform: translateY(-2px);
-}
-
-.analysis-dashboard.light .candidate-card:hover,
-.analysis-dashboard.light .ats-score-card:hover,
-.analysis-dashboard.light .personal-info-section:hover,
-.analysis-dashboard.light .score-breakdown-section:hover,
-.analysis-dashboard.light .role-predictions-section:hover,
-.analysis-dashboard.light .education-section:hover,
-.analysis-dashboard.light .recommendations-section:hover,
-.analysis-dashboard.light .skills:hover,
-.analysis-dashboard.light .step-card:hover {
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-  border-color: #cbd5e1;
-}
-
-.analysis-dashboard.dark .candidate-card:hover,
-.analysis-dashboard.dark .ats-score-card:hover,
-.analysis-dashboard.dark .personal-info-section:hover,
-.analysis-dashboard.dark .score-breakdown-section:hover,
-.analysis-dashboard.dark .role-predictions-section:hover,
-.analysis-dashboard.dark .education-section:hover,
-.analysis-dashboard.dark .recommendations-section:hover,
-.analysis-dashboard.dark .skills:hover,
-.analysis-dashboard.dark .step-card:hover {
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-  border-color: #475569;
-}
+}}
