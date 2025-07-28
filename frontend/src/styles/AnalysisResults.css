@@ -8,6 +8,12 @@
   transition: background 0.4s ease;
 }
 
+.analysis-results-modern:hover{
+  box-shadow: 0 20px 50px rgba(79, 70, 229, 0.2);
+  transform: translateY(-8px);
+  border-radius: 25px;
+}
+
 /* Theme Variables */
 .home-container.light .analysis-results-modern {
   --bg-gradient: linear-gradient(135deg, #f8f9ff 0%, #e3f2fd 50%, #f3e5f5 100%);
@@ -243,6 +249,21 @@
   font-size: 1.25rem;
   font-weight: 700;
   margin-bottom: 1rem;
+}
+
+.chip {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(89, 131, 83, 0.09);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+}
+
+.chip:hover {
+  transform: translateY(-3px);
+  background: linear-gradient(to right, #fdf7ef, #d4c6ad, #7e8052);
+  cursor: pointer;
+  box-shadow: 2px 2px 2px 2px #4c5f4e;
+  border-radius: 20px;
 }
 
 /* Personal Info Grid */

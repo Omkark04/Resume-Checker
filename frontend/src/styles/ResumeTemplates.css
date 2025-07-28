@@ -215,6 +215,7 @@
   font-size: var(--font-size-sm);
   cursor: pointer;
   transition: var(--transition-all);
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
 }
 

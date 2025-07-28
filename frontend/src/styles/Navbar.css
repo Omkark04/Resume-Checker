@@ -1,12 +1,12 @@
-/* Advanced Modern Animated Navbar */
+/* Advanced Modern Animated Navbar - Enhanced Responsive */
 .Navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 1rem 3rem;
     background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(15px) saturate(180%);
     -webkit-backdrop-filter: blur(15px) saturate(180%);
+    backdrop-filter: blur(15px) saturate(180%);
     box-shadow: 
         0 5px 30px rgba(0, 0, 0, 0.08),
         0 1px 0 rgba(255, 255, 255, 0.3) inset;
@@ -115,7 +115,7 @@
     width: 100%;
 }
 
-/* Hamburger Menu - Advanced */
+/* Hamburger Menu - Enhanced for smaller screens */
 .hamburger {
     display: none;
     cursor: pointer;
@@ -125,6 +125,7 @@
     width: 32px;
     height: 26px;
     position: relative;
+    padding: 4px;
 }
 
 .hamburger div {
@@ -141,7 +142,7 @@
     box-shadow: 0 0 10px rgba(37, 99, 235, 0.4);
 }
 
-/* Auth Buttons - Advanced */
+/* Auth Buttons - Enhanced */
 .desktop-auth {
     display: flex;
     gap: 1.5rem;
@@ -244,7 +245,7 @@
     transition: all 0.1s ease;
 }
 
-/* Mobile Menu - Advanced */
+/* Mobile Menu - Enhanced */
 .mobile-menu {
     position: fixed;
     top: 0;
@@ -252,8 +253,8 @@
     width: 320px;
     height: 100vh;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(241, 245, 249, 0.98));
-    backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
     box-shadow: 
         -10px 0 30px rgba(0, 0, 0, 0.1),
         inset 1px 0 0 rgba(255, 255, 255, 0.5);
@@ -305,8 +306,8 @@
     width: 100%;
     height: 100%;
     background: linear-gradient(135deg, rgba(30, 64, 175, 0.2), rgba(2, 132, 199, 0.1));
-    backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
     z-index: 999;
     opacity: 0;
     visibility: hidden;
@@ -393,7 +394,21 @@
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
-/* Responsive Design - Advanced */
+/* Enhanced Responsive Design with Multiple Breakpoints */
+@media (max-width: 1200px) {
+    .Navbar {
+        padding: 1rem 2.5rem;
+    }
+    
+    .nav-links {
+        gap: 2.2rem;
+    }
+    
+    #Logo {
+        font-size: 2.1rem;
+    }
+}
+
 @media (max-width: 1024px) {
     .Navbar {
         padding: 1rem 2rem;
@@ -401,6 +416,38 @@
     
     .nav-links {
         gap: 2rem;
+    }
+    
+    #Logo {
+        font-size: 2rem;
+    }
+    
+    .desktop-auth {
+        gap: 1.2rem;
+    }
+    
+    #Login, #Register, #Logout {
+        padding: 0.8rem 1.8rem;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 900px) {
+    .nav-links {
+        gap: 1.5rem;
+    }
+    
+    .nav-links a {
+        font-size: 1rem;
+    }
+    
+    .desktop-auth {
+        gap: 1rem;
+    }
+    
+    #Login, #Register, #Logout {
+        padding: 0.7rem 1.5rem;
+        font-size: 0.95rem;
     }
 }
 
@@ -410,13 +457,9 @@
     }
 
     .desktop-auth #Login,
-    #Register,
-    #Logout {
+    .desktop-auth #Register,
+    .desktop-auth #Logout {
         display: none;
-    }
-
-    #UserProfile {
-        display: inline;
     }
 
     .hamburger {
@@ -432,6 +475,114 @@
     
     .mobile-menu {
         width: 280px;
+    }
+    
+    .Navbar {
+        padding: 1rem 1.5rem;
+    }
+    
+    #Logo {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .Navbar {
+        padding: 0.8rem 1rem;
+        height: 70px;
+    }
+    
+    .Navbar.scrolled {
+        height: 65px;
+        padding: 0.7rem 1rem;
+    }
+    
+    #Logo {
+        font-size: 1.6rem;
+        padding: 0.3rem 0.8rem;
+    }
+    
+    .mobile-menu {
+        width: 260px;
+        padding: 5rem 1.5rem 1.5rem;
+    }
+    
+    .hamburger {
+        width: 28px;
+        height: 22px;
+    }
+    
+    .hamburger div {
+        height: 2.5px;
+    }
+}
+
+@media (max-width: 480px) {
+    .Navbar {
+        padding: 0.8rem 0.8rem;
+        height: 65px;
+        border-radius: 0 0 15px 15px;
+    }
+    
+    .Navbar.scrolled {
+        height: 60px;
+        padding: 0.6rem 0.8rem;
+    }
+    
+    #Logo {
+        font-size: 1.4rem;
+        padding: 0.2rem 0.6rem;
+    }
+    
+    .mobile-menu {
+        width: 240px;
+        padding: 4.5rem 1.2rem 1.2rem;
+    }
+    
+    .mobile-links a {
+        font-size: 1.15rem;
+        padding: 0.8rem 0;
+    }
+    
+    .hamburger {
+        width: 26px;
+        height: 20px;
+    }
+    
+    .hamburger div {
+        height: 2px;
+    }
+}
+
+@media (max-width: 360px) {
+    .Navbar {
+        padding: 0.6rem 0.6rem;
+        height: 60px;
+    }
+    
+    .Navbar.scrolled {
+        height: 55px;
+        padding: 0.5rem 0.6rem;
+    }
+    
+    #Logo {
+        font-size: 1.2rem;
+        padding: 0.2rem 0.4rem;
+    }
+    
+    .mobile-menu {
+        width: 220px;
+        padding: 4rem 1rem 1rem;
+    }
+    
+    .mobile-links a {
+        font-size: 1.1rem;
+        padding: 0.7rem 0;
+    }
+    
+    .hamburger {
+        width: 24px;
+        height: 18px;
     }
 }
 
@@ -463,10 +614,12 @@
     --button-bg: #e0e7ff;
     --button-text: #1e40af;
     --mobile-menu-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(241, 245, 249, 0.98));
+    --mobile-link-color: #1e293b;
+    --mobile-link-hover: #2563eb;
     --primary-color: #2563eb;
 }
 
-/* Dark Theme */
+/* Enhanced Dark Theme with proper nav link visibility */
 .dark-theme {
     --bg-color: #0f172a;
     --text-color: #f8fafc;
@@ -478,6 +631,8 @@
     --button-bg: #1e40af;
     --button-text: #e0e7ff;
     --mobile-menu-bg: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98));
+    --mobile-link-color: #e2e8f0;
+    --mobile-link-hover: #60a5fa;
     --primary-color: #3b82f6;
 }
 
@@ -488,6 +643,7 @@ body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
+/* Enhanced theme support for navbar elements */
 .Navbar {
     background: var(--nav-bg);
     box-shadow: var(--nav-shadow);
@@ -506,6 +662,50 @@ body {
     background: var(--mobile-menu-bg);
 }
 
+.mobile-links a {
+    color: var(--mobile-link-color);
+}
+
+.mobile-links a:hover {
+    color: var(--mobile-link-hover);
+}
+
+/* Dark theme hamburger visibility */
+.dark-theme .hamburger div {
+    background: linear-gradient(90deg, #60a5fa, #3b82f6);
+}
+
+.dark-theme .hamburger:hover div {
+    box-shadow: 0 0 10px rgba(96, 165, 250, 0.4);
+}
+
+.dark-theme .toggle .line1,
+.dark-theme .toggle .line3 {
+    background: linear-gradient(90deg, #f87171, #ef4444);
+}
+
+/* Dark theme mobile menu border */
+.dark-theme .mobile-menu {
+    border-left: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 
+        -10px 0 30px rgba(0, 0, 0, 0.3),
+        inset 1px 0 0 rgba(255, 255, 255, 0.1);
+}
+
+.dark-theme .mobile-menu.active {
+    box-shadow: 
+        -15px 0 40px rgba(0, 0, 0, 0.4),
+        inset 1px 0 0 rgba(255, 255, 255, 0.15);
+}
+
+.dark-theme .mobile-links a {
+    border-bottom: 1px solid rgba(71, 85, 105, 0.4);
+}
+
+.dark-theme .mobile-links a:hover {
+    border-bottom-color: #60a5fa;
+}
+
 /* Advanced Scroll Indicator */
 .Navbar::after {
     content: '';
@@ -522,6 +722,10 @@ body {
     width: 100%;
 }
 
+.dark-theme .Navbar::after {
+    background: linear-gradient(90deg, #60a5fa, #3b82f6);
+}
+
 /* Floating Animation for Buttons */
 @keyframes float {
     0%, 100% { transform: translateY(0px); }
@@ -530,4 +734,41 @@ body {
 
 .float-animation {
     animation: float 3s ease-in-out infinite;
+}
+
+/* Enhanced visibility for very small screens */
+@media (max-width: 320px) {
+    .Navbar {
+        padding: 0.5rem;
+        height: 55px;
+    }
+    
+    .Navbar.scrolled {
+        height: 50px;
+        padding: 0.4rem;
+    }
+    
+    #Logo {
+        font-size: 1.1rem;
+        padding: 0.1rem 0.3rem;
+    }
+    
+    .mobile-menu {
+        width: 200px;
+        padding: 3.5rem 0.8rem 0.8rem;
+    }
+    
+    .mobile-links a {
+        font-size: 1rem;
+        padding: 0.6rem 0;
+    }
+    
+    .hamburger {
+        width: 22px;
+        height: 16px;
+    }
+    
+    .hamburger div {
+        height: 1.5px;
+    }
 }

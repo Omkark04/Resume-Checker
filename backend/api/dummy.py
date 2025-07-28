@@ -1,53 +1,36 @@
-# --- contents of dummy.py ---
 import re
 import pickle
 import numpy as np
 from datetime import datetime
 from typing import Dict, List, Tuple, Any
-from sklearn.feature_extraction.text import TfidfVectorizer # Assuming these were used for training
-from sklearn.metrics.pairwise import cosine_similarity    # and saved in pkl
-
-# Traditional ML imports only (no NLP beyond TF-IDF for features)
-# from sklearn.cluster import KMeans # Not used in active path
-# from sklearn.preprocessing import LabelEncoder # Loaded from pickle
-# from sklearn.ensemble import RandomForestClassifier # Loaded from pickle
-# from sklearn.svm import SVC # Loaded from pickle
-
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+import urllib.parse
 
 class JobMatchingSystem:
     def __init__(self):
-        print("CONSOLE: Initializing ML-only Job Matching System...")
+        print("CONSOLE: Initializing Enhanced ML-only Job Matching System...")
         
-        # Load ML models
+        # Load ML models with error handling
         try:
-            # Ensure these .pkl files exist in the same directory or provide full paths
             self.clf_model = self._load_model(r"C:\Users\omkar\OneDrive\Desktop\InnoHack 2.0\Resume-Checker\backend\api\clf.pkl")
             print("CONSOLE: Classifier model loaded")
-        except FileNotFoundError:
-            print("CONSOLE: Failed to load classifier model (clf.pkl not found). Fallback will be used.")
-            self.clf_model = None
-        except Exception as e:
-            print(f"CONSOLE: Error loading classifier model: {e}")
+        except:
+            print("CONSOLE: Classifier model not found, using fallback")
             self.clf_model = None
             
         try:
             self.tfidf = self._load_model(r"C:\Users\omkar\OneDrive\Desktop\InnoHack 2.0\Resume-Checker\backend\api\tfidf.pkl")
             print("CONSOLE: TF-IDF vectorizer loaded")
-        except FileNotFoundError:
-            print("CONSOLE: Failed to load TF-IDF vectorizer (tfidf.pkl not found).")
-            self.tfidf = None
-        except Exception as e:
-            print(f"CONSOLE: Error loading TF-IDF vectorizer: {e}")
+        except:
+            print("CONSOLE: TF-IDF vectorizer not found")
             self.tfidf = None
             
         try:
             self.encoder = self._load_model(r"C:\Users\omkar\OneDrive\Desktop\InnoHack 2.0\Resume-Checker\backend\api\encoder.pkl")
             print("CONSOLE: Label encoder loaded")
-        except FileNotFoundError:
-            print("CONSOLE: Failed to load label encoder (encoder.pkl not found).")
-            self.encoder = None
-        except Exception as e:
-            print(f"CONSOLE: Error loading label encoder: {e}")
+        except:
+            print("CONSOLE: Label encoder not found")
             self.encoder = None
         
         self.job_roles = [
@@ -59,15 +42,17 @@ class JobMatchingSystem:
         ]
         
         self.skills_database = {
-            "Programming": ["Python", "Java", "JavaScript", "C++", "C#", "R", "Go", "Rust", "PHP", "Ruby"],
-            "Web Development": ["HTML", "CSS", "React", "Angular", "Vue.js", "Node.js", "Express", "Django", "Flask"],
-            "Data Science": ["Pandas", "NumPy", "Scikit-learn", "TensorFlow", "PyTorch", "Matplotlib", "Seaborn"],
-            "Databases": ["SQL", "MySQL", "PostgreSQL", "MongoDB", "Redis", "Cassandra", "Oracle"],
-            "Cloud": ["AWS", "Azure", "Google Cloud", "Docker", "Kubernetes", "Terraform"],
-            "Tools": ["Git", "JIRA", "Slack", "Tableau", "Power BI", "Excel", "Jupyter"]
+            "Programming": ["Python", "Java", "JavaScript", "C++", "C#", "R", "Go", "Rust", "PHP", "Ruby", "C", "Swift", "Kotlin"],
+            "Web Development": ["HTML", "CSS", "React", "Angular", "Vue.js", "Node.js", "Express", "Django", "Flask", "Bootstrap", "Tailwind"],
+            "Data Science": ["Pandas", "NumPy", "Scikit-learn", "TensorFlow", "PyTorch", "Matplotlib", "Seaborn", "Jupyter", "Analytics"],
+            "Databases": ["SQL", "MySQL", "PostgreSQL", "MongoDB", "Redis", "Cassandra", "Oracle", "SQLite"],
+            "Cloud": ["AWS", "Azure", "Google Cloud", "Docker", "Kubernetes", "Terraform", "Jenkins"],
+            "Tools": ["Git", "JIRA", "Slack", "Tableau", "Power BI", "Excel", "Figma", "Photoshop"],
+            "Mobile": ["Android", "iOS", "React Native", "Flutter", "Xamarin"],
+            "Other": ["Machine Learning", "Artificial Intelligence", "IoT", "Blockchain", "AR/VR"]
         }
         
-        print("CONSOLE: Job Matching System initialized successfully!")
+        print("CONSOLE: Enhanced Job Matching System initialized successfully!")
 
     def _load_model(self, filename):
         with open(filename, 'rb') as f:
@@ -82,13 +67,33 @@ class JobMatchingSystem:
 
     def parse_resume(self, resume_text: str) -> Dict:
         parsed_data = {}
+        parsed_data['name'] = self._extract_name(resume_text)
         parsed_data['email'] = self._extract_email(resume_text)
         parsed_data['phone'] = self._extract_phone(resume_text)
-        parsed_data['name'] = self._extract_name(resume_text)
+        parsed_data['location'] = self._extract_location(resume_text)
+        parsed_data['linkedin'] = self._extract_linkedin(resume_text)
+        parsed_data['github'] = self._extract_github(resume_text)
         parsed_data['skills'] = self._extract_skills(resume_text)
-        parsed_data['experience'] = self._extract_experience(resume_text)
-        parsed_data['education'] = self._extract_education(resume_text)
+        parsed_data['experience_level'] = self._extract_experience_level(resume_text)
+        parsed_data['experience_details'] = self._extract_experience_details(resume_text)
+        parsed_data['education'] = self._extract_education_detailed(resume_text)
+        parsed_data['projects'] = self._extract_projects(resume_text)
+        parsed_data['summary'] = self._extract_summary(resume_text)
+        parsed_data['languages'] = self._extract_languages(resume_text)
+        parsed_data['achievements'] = self._extract_achievements(resume_text)
+        parsed_data['hobbies'] = self._extract_hobbies(resume_text)
+        parsed_data['certifications'] = self._extract_certifications(resume_text)
         return parsed_data
+
+    def _extract_name(self, text: str) -> str:
+        lines = text.strip().split('\n')
+        for line in lines[:8]:
+            line = line.strip()
+            if line and len(line.split()) <= 4 and '@' not in line and not any(char.isdigit() for char in line) and len(line) > 3:
+                excluded_words = ['SKILLS', 'EDUCATION', 'EXPERIENCE', 'PROJECTS', 'SUMMARY', 'OBJECTIVE', 'CONTACT', 'RESUME', 'CV', 'PROFILE']
+                if line.upper() not in excluded_words and not any(word in line.upper() for word in ['DEVELOPER', 'ENGINEER', 'ANALYST', 'MANAGER']):
+                    return line
+        return "Not found"
 
     def _extract_email(self, text: str) -> str:
         email_pattern = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
@@ -97,9 +102,10 @@ class JobMatchingSystem:
 
     def _extract_phone(self, text: str) -> str:
         phone_patterns = [
+            r'\+91[-.\s]?\d{10}',
+            r'\+\d{1,3}[-.\s]?\d{3,4}[-.\s]?\d{3,4}[-.\s]?\d{4}',
             r'\b\d{3}[-.]?\d{3}[-.]?\d{4}\b',
-            r'\(\d{3}\)\s*\d{3}[-.]?\d{4}',
-            r'\+\d{1,3}[-.\s]?\d{3,4}[-.\s]?\d{3,4}[-.\s]?\d{4}'
+            r'\(\d{3}\)\s*\d{3}[-.]?\d{4}'
         ]
         for pattern in phone_patterns:
             phones = re.findall(pattern, text)
@@ -107,137 +113,356 @@ class JobMatchingSystem:
                 return phones[0]
         return "Not found"
 
-    def _extract_name(self, text: str) -> str:
-        lines = text.strip().split('\n')
-        for line in lines[:5]: # Check first 5 lines for a name
-            line = line.strip()
-            # Basic check: not an email, no digits, plausible length
-            if line and len(line.split()) <= 4 and '@' not in line and not any(char.isdigit() for char in line) and len(line) > 3:
-                # Avoid lines that look like section headers (e.g., "SKILLS", "EDUCATION")
-                if line.upper() not in ["SKILLS", "EDUCATION", "EXPERIENCE", "PROJECTS", "SUMMARY", "OBJECTIVE", "CONTACT"]:
-                    return line
+    def _extract_location(self, text: str) -> str:
+        location_patterns = [
+            r'([A-Za-z\s]+),\s*([A-Za-z\s]+)[-\s]*\d{6}',
+            r'([A-Za-z\s]+),\s*([A-Za-z\s]+),\s*([A-Za-z\s]+)',
+            r'([A-Za-z\s]+),\s*([A-Za-z\s]+)'
+        ]
+        
+        for pattern in location_patterns:
+            matches = re.findall(pattern, text)
+            if matches:
+                location = ', '.join(matches[0])
+                if len(location) > 5 and location.lower() not in ['not found', 'email', 'phone']:
+                    return location
         return "Not found"
 
+    def _extract_linkedin(self, text: str) -> str:
+        linkedin_patterns = [
+            r'linkedin\.com/in/[\w-]+',
+            r'linkedin\.com/[\w-]+',
+            r'linkedin:\s*([\w.-]+)',
+            r'🔗\s*(https?://[^\s]+linkedin[^\s]*)'
+        ]
+        
+        for pattern in linkedin_patterns:
+            matches = re.findall(pattern, text, re.IGNORECASE)
+            if matches:
+                link = matches[0]
+                if not link.startswith('http'):
+                    link = f"https://{link}"
+                return link
+        return "Not found"
+
+    def _extract_github(self, text: str) -> str:
+        github_patterns = [
+            r'github\.com/[\w-]+',
+            r'github:\s*([\w.-]+)',
+            r'💻\s*(https?://[^\s]+github[^\s]*)',
+            r'https?://github\.com/[\w-]+'
+        ]
+        
+        for pattern in github_patterns:
+            matches = re.findall(pattern, text, re.IGNORECASE)
+            if matches:
+                link = matches[0]
+                if not link.startswith('http'):
+                    link = f"https://{link}"
+                return link
+        return "Not found"
 
     def _extract_skills(self, text: str) -> List[str]:
         skills_found = []
         text_lower = text.lower()
-        # Consider adding a regex for skills if they follow a pattern, or look in a specific "Skills" section
+        
         for category, skills_list in self.skills_database.items():
             for skill in skills_list:
-                # Use word boundaries to avoid partial matches e.g. 'C' in 'Certificate'
                 if re.search(r'\b' + re.escape(skill.lower()) + r'\b', text_lower):
                     skills_found.append(skill)
+                    
+        # Additional skill extraction from common patterns
+        skill_section_match = re.search(r'(?:skills?|technical\s+skills?|competencies)[:]*\s*(.+?)(?=\n\s*[A-Z][^:]*:|$)', text, re.IGNORECASE | re.DOTALL)
+        if skill_section_match:
+            skills_text = skill_section_match.group(1)
+            additional_skills = re.findall(r'\b[A-Za-z][A-Za-z0-9+#.]{2,15}\b', skills_text)
+            skills_found.extend([skill for skill in additional_skills if len(skill) > 2])
+                    
         return list(set(skills_found))
 
-    def _extract_experience(self, text: str) -> str:
-        experience_patterns = [
-            r'(\d+\.?\d*|\d+)[\+\-\s]years?[\s](?:of\s*)?experience', # "5+ years experience", "3 years of experience"
-            r'experience[\s:]?[\s]*(\d+\.?\d*|\d+)[\+\-\s]*years?',   # "experience: 5 years"
-            r'(\d+\.?\d*|\d+)[\s](?:to\s\d+\.?\d*|\d+)?[\s]years?[\s](?:of\s*)?(?:work\s*)?experience' # "3 to 5 years experience"
-        ]
-        text_to_search = text.lower()
-        # Prioritize sections typically containing overall experience
-        experience_section_keywords = ['summary', 'objective', 'overview', 'profile']
-        search_priority_text = ""
-        
-        for keyword in experience_section_keywords:
-            match = re.search(rf"{keyword}.*?\n\n", text_to_search, re.IGNORECASE | re.DOTALL) # crude section end
-            if match:
-                search_priority_text += match.group(0) + " "
-
-        if not search_priority_text: # if no specific sections found, search whole text
-            search_priority_text = text_to_search
-
-        for pattern in experience_patterns:
-            matches = re.findall(pattern, search_priority_text)
-            if matches:
-                # If multiple numbers are captured due to groups in regex, try to find the most relevant one.
-                # For now, taking the first plausible number.
-                for match_tuple in matches:
-                    if isinstance(match_tuple, tuple):
-                        for item in match_tuple:
-                            if item and item.replace('.', '', 1).isdigit(): return f"{item} years"
-                    elif isinstance(match_tuple, str) and match_tuple.replace('.', '', 1).isdigit():
-                        return f"{match_tuple} years"
-        
-        # Fallback: if no pattern match, look for any "X years" text near 'experience'
-        # This is very basic and may not be accurate
-        simple_exp_match = re.search(r'(\d+)\s*year[s]?', text_to_search)
-        if simple_exp_match:
-            return f"{simple_exp_match.group(1)} years"
-            
-        return "Not specified"
-
-    def _extract_education(self, text: str) -> List[str]:
-        education_found = []
+    def _extract_experience_level(self, text: str) -> str:
         text_lower = text.lower()
         
-        # Look for an "Education" section first
-        education_section = ""
-        education_header_match = re.search(r'(education\b.*?)(?=\n\s*[A-Z][a-z]+[A-Z\s]*:|\n\n|\Z)', text_lower, re.IGNORECASE | re.DOTALL)
-        if education_header_match:
-            education_section = education_header_match.group(1)
-        else: # if no explicit section, search the whole text (less reliable)
-            education_section = text_lower
-
-        education_keywords_degree = [
-            r"bachelor(?:'s)?\s*(?:degree)?\s*(?:of|in|from)?\s*[\w\s]+", 
-            r"master(?:'s)?\s*(?:degree)?\s*(?:of|in|from)?\s*[\w\s]+",
-            r"phd\s*(?:in|from)?\s*[\w\s]+", 
-            r"associate(?:'s)?\s*(?:degree)?\s*(?:of|in|from)?\s*[\w\s]+",
-            r"m\.?b\.?a\.?", r"b\.?s\.?c\.?", r"m\.?s\.?c\.?", 
-            r"b\.?tech\.?", r"m\.?tech\.?", 
-            r"b\.?e\.?", # Bachelor of Engineering
-            r"m\.?e\.?", # Master of Engineering
-            r"college\s*(?:degree|diploma)?\s*(?:in|of|from)?\s*[\w\s]+",
-            r"university\s*(?:degree|diploma)?\s*(?:in|of|from)?\s*[\w\s]+"
+        # Check for fresher indicators
+        fresher_keywords = ['fresher', 'recent graduate', 'new graduate', 'entry level', 'seeking opportunities', 'student']
+        if any(keyword in text_lower for keyword in fresher_keywords):
+            return "Fresher"
+            
+        # Extract years of experience
+        experience_patterns = [
+            r'(\d+\.?\d*|\d+)[\+\-\s]*years?\s*(?:of\s*)?experience',
+            r'experience[\s:]?\s*(\d+\.?\d*|\d+)[\+\-\s]*years?',
+            r'(\d+)[\s]*to[\s]*(\d+)[\s]*years?'
         ]
         
-        # Split the education section by lines to find relevant degrees
-        lines_to_search = [line.strip() for line in education_section.split('\n') if line.strip()]
+        for pattern in experience_patterns:
+            matches = re.findall(pattern, text_lower)
+            if matches:
+                if isinstance(matches[0], tuple):
+                    years = max([float(x) for x in matches[0] if x.replace('.', '').isdigit()])
+                else:
+                    years = float(matches[0])
+                return f"Experienced ({years} years)"
+                
+        return "Not specified"
 
-        for line in lines_to_search:
-            for keyword_pattern in education_keywords_degree:
-                match = re.search(keyword_pattern, line, re.IGNORECASE)
-                if match:
-                    # Attempt to extract a meaningful segment around the keyword
-                    context_window = 50 # characters before and after
-                    start_index = max(0, match.start() - context_window)
-                    end_index = min(len(line), match.end() + context_window)
-                    # Try to get a more "complete" line for context
-                    original_line_match = [orig_line for orig_line in text.split('\n') if line in orig_line.lower().strip()]
-                    if original_line_match:
-                         education_found.append(original_line_match[0].strip())
-                    else:
-                         education_found.append(line[start_index:end_index].strip())
-                    break # Move to next line once a keyword is found in current line
+    def _extract_experience_details(self, text: str) -> List[Dict]:
+        experiences = []
         
-        if not education_found:
-            # Broader search if specific patterns fail - less accurate
-            generic_keywords = ["degree", "university", "college", "diploma", "institute"]
-            for line in lines_to_search:
-                for gk in generic_keywords:
-                    if gk in line:
-                        original_line_match = [orig_line for orig_line in text.split('\n') if line in orig_line.lower().strip()]
-                        if original_line_match:
-                             education_found.append(original_line_match[0].strip())
-                        else:
-                             education_found.append(line.strip())
-                        break # one find per line is enough for generic
-                if len(education_found) > 3: # limit generic finds
-                    break
+        # Look for work experience section
+        exp_section_patterns = [
+            r'(?:work\s+experience|experience|professional\s+experience)[:]*\s*(.+?)(?=\n\s*(?:education|projects|skills|certifications|[A-Z][^:]*:)|$)',
+            r'(?:employment|career)[:]*\s*(.+?)(?=\n\s*(?:education|projects|skills|[A-Z][^:]*:)|$)'
+        ]
+        
+        exp_text = ""
+        for pattern in exp_section_patterns:
+            match = re.search(pattern, text, re.IGNORECASE | re.DOTALL)
+            if match:
+                exp_text = match.group(1)
+                break
+        
+        if not exp_text:
+            exp_text = text  # Use full text if no specific section found
+            
+        # Extract individual experiences
+        job_patterns = [
+            r'([A-Za-z\s&]+(?:Developer|Engineer|Analyst|Manager|Specialist|Intern|Executive))\s*\n?([A-Za-z\s&.,]+(?:Company|Corp|Ltd|Inc|Solutions|Technologies))\s*\n?([A-Za-z\s,]+)?\s*\n?(\d{4}\s*[-–]\s*(?:\d{4}|Present))',
+            r'(\d{4}\s*[-–]\s*(?:\d{4}|Present))\s*\n?([A-Za-z\s&]+(?:Developer|Engineer|Analyst|Manager|Specialist|Intern))\s*\n?([A-Za-z\s&.,]+(?:Company|Corp|Ltd|Inc|Solutions|Technologies))'
+        ]
+        
+        for pattern in job_patterns:
+            matches = re.findall(pattern, exp_text, re.IGNORECASE)
+            for match in matches:
+                if len(match) >= 3:
+                    exp_dict = {
+                        'job_title': match[0].strip() if match[0] else "Not specified",
+                        'company': match[1].strip() if match[1] else "Not specified", 
+                        'location': match[2].strip() if len(match) > 2 and match[2] else "Not specified",
+                        'duration': match[3].strip() if len(match) > 3 and match[3] else "Not specified",
+                        'responsibilities': self._extract_responsibilities(exp_text, match[0] if match[0] else match[1])
+                    }
+                    experiences.append(exp_dict)
+                    
+        return experiences
 
-        return list(set(education_found)) if education_found else ["Not specified"]
+    def _extract_responsibilities(self, text: str, job_context: str) -> List[str]:
+        responsibilities = []
+        
+        # Look for bullet points or numbered lists near the job context
+        context_index = text.lower().find(job_context.lower())
+        if context_index != -1:
+            context_text = text[context_index:context_index + 500]  # Next 500 chars
+            
+            # Extract bullet points
+            bullet_patterns = [
+                r'[•·▪▫◦‣⁃]\s*(.+?)(?=\n|$)',
+                r'[-*]\s*(.+?)(?=\n|$)',
+                r'\d+\.\s*(.+?)(?=\n|$)'
+            ]
+            
+            for pattern in bullet_patterns:
+                matches = re.findall(pattern, context_text)
+                responsibilities.extend([match.strip() for match in matches if len(match.strip()) > 10])
+                
+        return responsibilities[:5]  # Limit to 5 responsibilities
 
+    def _extract_education_detailed(self, text: str) -> List[Dict]:
+        education_list = []
+        
+        # Look for education section
+        edu_patterns = [
+            r'(?:education|academic\s+background|qualifications)[:]*\s*(.+?)(?=\n\s*(?:experience|projects|skills|[A-Z][^:]*:)|$)'
+        ]
+        
+        edu_text = ""
+        for pattern in edu_patterns:
+            match = re.search(pattern, text, re.IGNORECASE | re.DOTALL)
+            if match:
+                edu_text = match.group(1)
+                break
+                
+        if not edu_text:
+            edu_text = text  # Use full text if no specific section found
+            
+        # Extract education details
+        edu_entries = []
+        
+        # Pattern for structured education entries
+        degree_patterns = [
+            r'([A-Za-z.\s]+(?:B\.?Tech|M\.?Tech|Bachelor|Master|PhD|Diploma|Certificate)[\w\s&]+)\s*\n?([A-Za-z\s,.-]+(?:College|University|Institute|School)[\w\s,.-]*)\s*\n?(\d{4}[\s-]*(?:\d{4}|Present)?)\s*\n?(?:(?:GPA|CGPA|Score|Percentage)[:]*\s*([\d.]+))?',
+            r'(\d{4}[\s-]*(?:\d{4}|Present)?)\s*\n?([A-Za-z.\s]+(?:B\.?Tech|M\.?Tech|Bachelor|Master|PhD)[\w\s&]+)\s*\n?([A-Za-z\s,.-]+(?:College|University|Institute)[\w\s,.-]*)'
+        ]
+        
+        for pattern in degree_patterns:
+            matches = re.findall(pattern, edu_text, re.IGNORECASE)
+            for match in matches:
+                edu_dict = {
+                    'degree': match[0].strip() if match[0] else "Not specified",
+                    'institution': match[1].strip() if match[1] else "Not specified",
+                    'year': match[2].strip() if match[2] else "Not specified",
+                    'gpa_score': match[3].strip() if len(match) > 3 and match[3] else "Not specified"
+                }
+                edu_entries.append(edu_dict)
+                
+        return edu_entries
+
+    def _extract_projects(self, text: str) -> List[Dict]:
+        projects = []
+        
+        # Look for projects section
+        project_patterns = [
+            r'(?:projects?|portfolio)[:]*\s*(.+?)(?=\n\s*(?:experience|education|skills|[A-Z][^:]*:)|$)'
+        ]
+        
+        project_text = ""
+        for pattern in project_patterns:
+            match = re.search(pattern, text, re.IGNORECASE | re.DOTALL)
+            if match:
+                project_text = match.group(1)
+                break
+                
+        if not project_text:
+            # Look for project indicators in full text
+            project_indicators = ['developed', 'built', 'created', 'implemented', 'designed']
+            lines = text.split('\n')
+            project_lines = [line for line in lines if any(indicator in line.lower() for indicator in project_indicators)]
+            project_text = '\n'.join(project_lines)
+            
+        # Extract project details
+        project_entries = []
+        
+        # Look for project titles and descriptions
+        project_sections = re.split(r'\n(?=\w)', project_text)
+        
+        for section in project_sections:
+            if len(section.strip()) > 20:  # Minimum length for a project description
+                lines = section.strip().split('\n')
+                if lines:
+                    title = lines[0].strip()
+                    
+                    # Extract GitHub/project links
+                    links = re.findall(r'https?://[^\s]+', section)
+                    github_link = next((link for link in links if 'github' in link.lower()), 
+                                     links[0] if links else "Not found")
+                    
+                    # Extract technologies
+                    tech_patterns = [
+                        r'(?:technologies?|tech\s+stack|built\s+using|tools?)[:]*\s*([^.\n]+)',
+                        r'using\s+([A-Za-z0-9+#.\s,]+)'
+                    ]
+                    
+                    technologies = []
+                    for pattern in tech_patterns:
+                        matches = re.findall(pattern, section, re.IGNORECASE)
+                        for match in matches:
+                            tech_list = re.findall(r'\b[A-Za-z][A-Za-z0-9+#.]{1,15}\b', match)
+                            technologies.extend(tech_list)
+                    
+                    project_dict = {
+                        'title': title,
+                        'description': section.strip(),
+                        'technologies': list(set(technologies)) if technologies else ["Not specified"],
+                        'project_link': github_link
+                    }
+                    project_entries.append(project_dict)
+                    
+        return project_entries[:5]  # Limit to 5 projects
+
+    def _extract_summary(self, text: str) -> str:
+        summary_patterns = [
+            r'(?:summary|profile|objective|about\s+me)[:]*\s*(.+?)(?=\n\s*(?:experience|education|skills|[A-Z][^:]*:)|$)',
+            r'(?:professional\s+summary|career\s+objective)[:]*\s*(.+?)(?=\n\s*[A-Z]|$)'
+        ]
+        
+        for pattern in summary_patterns:
+            match = re.search(pattern, text, re.IGNORECASE | re.DOTALL)
+            if match:
+                summary = match.group(1).strip()
+                if len(summary) > 50:  # Minimum length for meaningful summary
+                    return summary
+                    
+        # If no explicit summary, extract first meaningful paragraph
+        paragraphs = text.split('\n\n')
+        for para in paragraphs:
+            if len(para.strip()) > 100 and not any(keyword in para.lower() for keyword in ['education', 'experience', 'skills', 'projects']):
+                return para.strip()
+                
+        return "Not found"
+
+    def _extract_languages(self, text: str) -> List[str]:
+        languages = []
+        
+        # Look for language section
+        lang_patterns = [
+            r'(?:languages?|linguistic\s+skills?)[:]*\s*(.+?)(?=\n\s*[A-Z]|$)'
+        ]
+        
+        for pattern in lang_patterns:
+            match = re.search(pattern, text, re.IGNORECASE | re.DOTALL)
+            if match:
+                lang_text = match.group(1)
+                common_languages = ['English', 'Hindi', 'Marathi', 'Tamil', 'Telugu', 'Bengali', 'Gujarati', 'Kannada', 'Malayalam', 'Punjabi', 'Spanish', 'French', 'German', 'Chinese', 'Japanese']
+                for lang in common_languages:
+                    if lang.lower() in lang_text.lower():
+                        languages.append(lang)
+                        
+        return languages
+
+    def _extract_achievements(self, text: str) -> List[str]:
+        achievements = []
+        
+        achievement_keywords = ['winner', 'won', 'achieved', 'awarded', 'recognized', 'certified', 'hackathon', 'competition', 'champion', 'medal', 'prize']
+        
+        lines = text.split('\n')
+        for line in lines:
+            if any(keyword in line.lower() for keyword in achievement_keywords) and len(line.strip()) > 20:
+                achievements.append(line.strip())
+                
+        return achievements[:5]  # Limit to 5 achievements
+
+    def _extract_hobbies(self, text: str) -> List[str]:
+        hobbies = []
+        
+        hobby_patterns = [
+            r'(?:hobbies|interests|personal\s+interests)[:]*\s*(.+?)(?=\n\s*[A-Z]|$)'
+        ]
+        
+        for pattern in hobby_patterns:
+            match = re.search(pattern, text, re.IGNORECASE | re.DOTALL)
+            if match:
+                hobby_text = match.group(1)
+                hobby_list = re.findall(r'\b[A-Za-z\s]{3,20}\b', hobby_text)
+                hobbies.extend([hobby.strip() for hobby in hobby_list if len(hobby.strip()) > 2])
+                
+        return hobbies[:5]  # Limit to 5 hobbies
+
+    def _extract_certifications(self, text: str) -> List[str]:
+        certifications = []
+        
+        cert_patterns = [
+            r'(?:certifications?|certificates?)[:]*\s*(.+?)(?=\n\s*[A-Z]|$)'
+        ]
+        
+        for pattern in cert_patterns:
+            match = re.search(pattern, text, re.IGNORECASE | re.DOTALL)
+            if match:
+                cert_text = match.group(1)
+                # Look for certification names and links
+                cert_lines = cert_text.split('\n')
+                for line in cert_lines:
+                    if len(line.strip()) > 10:
+                        certifications.append(line.strip())
+                        
+        return certifications
 
     def calculate_similarity_scores(self, resume_text: str, job_description: str) -> Dict:
         scores = {}
-        if not resume_text or not job_description: # Basic check
-             scores['tfidf_similarity'] = 0.0
-             scores['keyword_similarity'] = 0.0
-             scores['combined_score'] = 0.0
-             return scores
+        if not resume_text or not job_description:
+            scores['tfidf_similarity'] = 0.0
+            scores['keyword_similarity'] = 0.0
+            scores['combined_score'] = 0.0
+            return scores
 
         scores['tfidf_similarity'] = self._tfidf_similarity(resume_text, job_description)
         scores['keyword_similarity'] = self._keyword_similarity(resume_text, job_description)
@@ -248,113 +473,51 @@ class JobMatchingSystem:
         return scores
 
     def _tfidf_similarity(self, text1: str, text2: str) -> float:
-        if not self.tfidf: # Check if TF-IDF model (vectorizer) is loaded
-            print("CONSOLE: TF-IDF vectorizer not loaded, cannot calculate TF-IDF similarity.")
-             # Fallback or re-initialize if appropriate and possible, here just return 0
-            try:
-                print("CONSOLE: Attempting to initialize a default TF-IDF for this similarity calculation.")
-                local_tfidf_vectorizer = TfidfVectorizer(stop_words='english', max_features=5000)
-                local_tfidf_vectorizer.fit([text1, text2]) # Fit on current texts
-                tfidf_matrix = local_tfidf_vectorizer.transform([text1, text2])
-                similarity = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2])[0][0]
-                return round(similarity * 100, 2)
-            except Exception as e:
-                print(f"CONSOLE: Error initializing default TF-IDF for similarity: {e}")
-                return 0.0
-
         try:
-            # Use the pre-loaded TF-IDF (which should have been fit on a larger corpus)
-            # For direct comparison, it's often better to fit_transform on the combined texts
-            # or ensure the existing self.tfidf is appropriate.
-            # If self.tfidf was trained on a general corpus, transform both texts with it.
-            # If it was trained on job descriptions only, its applicability to resume text for similarity might vary.
-            # A common approach for comparing two specific docs:
-            temp_vectorizer = TfidfVectorizer(vocabulary=self.tfidf.vocabulary_, stop_words='english') # Use existing vocab
-            # Or, more simply, just use a new vectorizer for this pair for pairwise similarity
-            # vectorizer = TfidfVectorizer(stop_words='english', max_features=5000)
-            # tfidf_matrix = vectorizer.fit_transform([text1, text2])
-
-            tfidf_matrix = self.tfidf.transform([self.clean_resume(text1), self.clean_resume(text2)]) # Use loaded and globally trained TFIDF
+            vectorizer = TfidfVectorizer(stop_words='english', max_features=5000)
+            tfidf_matrix = vectorizer.fit_transform([self.clean_resume(text1), self.clean_resume(text2)])
             similarity = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2])[0][0]
             return round(similarity * 100, 2)
-        except Exception as e:
-            print(f"CONSOLE: TF-IDF similarity calculation error: {e}")
-            # Fallback to new vectorizer for this pair
-            try:
-                vectorizer = TfidfVectorizer(stop_words='english', max_features=5000)
-                tfidf_matrix = vectorizer.fit_transform([self.clean_resume(text1), self.clean_resume(text2)])
-                similarity = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2])[0][0]
-                return round(similarity * 100, 2)
-            except:
-                 return 0.0
-
+        except:
+            return 0.0
 
     def _keyword_similarity(self, resume_text: str, job_description: str) -> float:
         try:
             resume_keywords = set(re.findall(r'\b\w+\b', self.clean_resume(resume_text).lower()))
             job_keywords = set(re.findall(r'\b\w+\b', self.clean_resume(job_description).lower()))
             
-            if not resume_keywords or not job_keywords: # Handle empty sets
+            if not resume_keywords or not job_keywords:
                 return 0.0
 
             common_keywords = resume_keywords.intersection(job_keywords)
-            # Optional: weight common keywords or consider only relevant ones
-            
-            # Jaccard Index variant
             total_unique_keywords = resume_keywords.union(job_keywords)
-            if not total_unique_keywords: return 0.0
             
+            if not total_unique_keywords:
+                return 0.0
+                
             return round((len(common_keywords) / len(total_unique_keywords)) * 100, 2)
-        except Exception as e:
-            print(f"CONSOLE: Keyword similarity calculation error: {e}")
+        except:
             return 0.0
 
     def predict_job_roles(self, resume_text: str) -> Dict:
         if self.clf_model and self.tfidf and self.encoder:
             try:
                 cleaned_text = self.clean_resume(resume_text)
-                # Ensure tfidf is a TfidfVectorizer instance and has been fitted
-                if not hasattr(self.tfidf, 'transform'):
-                    print("CONSOLE: TF-IDF model is not a fitted vectorizer.")
-                    return self._fallback_role_prediction(resume_text)
-                
                 vectorized_text = self.tfidf.transform([cleaned_text])
+                prediction = self.clf_model.predict(vectorized_text)
+                probabilities = self.clf_model.predict_proba(vectorized_text)[0]
                 
-                # Ensure clf_model supports predict_proba and predict
-                if not (hasattr(self.clf_model, 'predict_proba') and hasattr(self.clf_model, 'predict')):
-                     print("CONSOLE: Classifier model does not support predict/predict_proba.")
-                     return self._fallback_role_prediction(resume_text)
-
-                prediction = self.clf_model.predict(vectorized_text) # Integer labels
-                probabilities = self.clf_model.predict_proba(vectorized_text)[0] # Probabilities for each class
-                
-                # Get top 5 predictions
-                # Argsort returns indices that would sort the array. [::-1] reverses it for descending order.
-                top_indices = np.argsort(probabilities)[::-1][:5] 
-                
-                # Ensure encoder supports inverse_transform
-                if not hasattr(self.encoder, 'inverse_transform'):
-                    print("CONSOLE: Label encoder does not support inverse_transform.")
-                    # If you can't inverse_transform, you might have to return raw indices or use fallback
-                    # For now, assuming the fallback has textual roles
-                    return self._fallback_role_prediction(resume_text)
-
-                roles = self.encoder.inverse_transform(top_indices) # Convert integer labels back to role names
+                top_indices = np.argsort(probabilities)[::-1][:5]
+                roles = self.encoder.inverse_transform(top_indices)
                 scores = [round(probabilities[i] * 100, 2) for i in top_indices]
                 
                 return {"roles": roles.tolist(), "scores": scores}
-            except Exception as e:
-                print(f"CONSOLE: Prediction error with ML models: {e}")
-                print("CONSOLE: Using fallback role prediction.")
+            except:
+                print("CONSOLE: ML prediction failed, using fallback")
         
-        # Fallback if ML models not available or error during prediction
         return self._fallback_role_prediction(resume_text)
 
     def _fallback_role_prediction(self, resume_text: str) -> Dict:
-        print("CONSOLE: Executing fallback role prediction.")
-        # Using self.job_roles for a broader list of potential roles
-        # More sophisticated keyword association might be needed.
-        # This is a simplified example.
         role_keywords = {
             "Data Analyst": ["data", "analyst", "sql", "excel", "tableau", "power bi", "analysis", "reporting"],
             "Software Engineer": ["software", "engineer", "developer", "programming", "code", "agile", "java", "python", "c++"],
@@ -365,195 +528,210 @@ class JobMatchingSystem:
             "DevOps Engineer": ["devops", "ci/cd", "docker", "kubernetes", "aws", "azure", "automation", "jenkins"],
             "Business Analyst": ["business analyst", "requirements", "stakeholder", "process improvement", "erp", "crm"],
             "Product Manager": ["product manager", "product owner", "roadmap", "user stories", "agile", "market research"],
-            "UI/UX Designer": ["ui/ux", "designer", "figma", "sketch", "adobe xd", "user interface", "user experience", "wireframe"],
+            "UI/UX Designer": ["ui/ux", "designer", "figma", "sketch", "adobe xd", "user interface", "user experience"],
             "Data Scientist": ["data scientist", "statistics", "python", "r", "machine learning", "algorithms", "modeling"],
-            "Cybersecurity Analyst": ["cybersecurity", "security analyst", "infosec", "siem", "firewall", "penetration testing"],
-            "Mobile Developer": ["mobile developer", "ios", "android", "swift", "kotlin", "react native", "flutter"],
-            "Cloud Engineer": ["cloud engineer", "aws", "azure", "gcp", "cloud architecture", "terraform", "kubernetes"],
-            "System Administrator": ["sysadmin", "system administrator", "linux", "windows server", "networking", "vmware"]
-        } # Use all roles from self.job_roles or refine keyword sets
+            "Cybersecurity Analyst": ["cybersecurity", "security analyst", "infosec", "siem", "firewall", "penetration"],
+        }
 
         text_lower = self.clean_resume(resume_text).lower()
-        role_scores = {role: 0 for role in self.job_roles} # Initialize all roles defined in system
+        role_scores = {}
         
         for role_name, keywords in role_keywords.items():
-            if role_name in role_scores: # ensure the keyword set matches a role in self.job_roles
-                for keyword in keywords:
-                    if re.search(r'\b' + re.escape(keyword) + r'\b', text_lower):
-                        role_scores[role_name] += 1
+            score = 0
+            for keyword in keywords:
+                if re.search(r'\b' + re.escape(keyword) + r'\b', text_lower):
+                    score += 1
+            role_scores[role_name] = score
         
-        # Sort by score
         sorted_roles = sorted(role_scores.items(), key=lambda x: x[1], reverse=True)
+        filtered_roles = [item for item in sorted_roles if item[1] > 0][:5]
         
-        # Filter out roles with zero scores, unless all have zero scores
-        filtered_sorted_roles = [item for item in sorted_roles if item[1] > 0]
-        if not filtered_sorted_roles and sorted_roles: # if all scores are 0, return top ones anyway
-            filtered_sorted_roles = sorted_roles
-
-        roles = [role for role, _ in filtered_sorted_roles[:5]] # Top 5
-        # Simple scaling: Max score determines 100%, or just scale by number of keywords.
-        # Let's say max possible keywords matched is around 5 for a strong match = 100%
-        # For simplicity, cap at 100 if many keywords
-        scores = [min(score * 20, 100) for _, score in filtered_sorted_roles[:5]]
-        
-        # Ensure we return something even if no keywords match for any role
-        if not roles:
-            return {"roles": ["General Application"], "scores": [20]} # Default if no matches
+        if not filtered_roles:
+            return {"roles": ["General Application"], "scores": [20]}
             
+        roles = [role for role, _ in filtered_roles]
+        scores = [min(score * 20, 100) for _, score in filtered_roles]
+        
         return {"roles": roles, "scores": scores}
 
-    def generate_job_suggestions(self, resume_data: Dict, preferences: Dict = None) -> List[Dict]:
-        suggestions = []
-        # Create a single text string from resume_data for role prediction
-        resume_text_for_prediction = ' '.join(str(v) for k, v in resume_data.items() if k in ['skills', 'experience', 'education'])
-        if not resume_text_for_prediction.strip() and 'full_text' in resume_data : # use full_text if available
-            resume_text_for_prediction = resume_data['full_text']
-
-
-        role_prediction = self.predict_job_roles(resume_text_for_prediction)
-        
-        resume_skills = resume_data.get('skills', [])
-        if isinstance(resume_skills, str) : # if skills is a string, attempt to listify
-             resume_skills = [skill.strip() for skill in resume_skills.split(',') if skill.strip()]
-        if not resume_skills: resume_skills = ["various technologies"]
-
-
-        for i, (role, score) in enumerate(zip(role_prediction["roles"][:5], 
-                                            role_prediction["scores"][:5])):
-            if score < 10 and i > 0: # Heuristic: if score is too low (and not the top one), maybe don't suggest
-                 continue
-
-            suggestion = {
-                "role": role,
-                "match_score": score, # This score comes from role_prediction
-                "required_skills": self._get_role_requirements(role),
-                "salary_range": self._estimate_salary_range(role, resume_data.get('experience', '0 years')),
-                "recommendation_reason": f"Potential fit based on your profile. Highlight skills like {', '.join(resume_skills[:3])} for roles like this."
-            }
+    def extract_keywords_analysis(self, resume_text: str, job_description: str) -> Dict:
+        if not job_description:
+            return {"present_keywords": [], "missing_keywords": []}
             
-            # Add more nuanced reason if possible
-            matched_req_skills = [s for s in self._get_role_requirements(role) if s.lower() in (skill.lower() for skill in resume_skills)]
-            if matched_req_skills:
-                 suggestion["recommendation_reason"] = f"Matches your skills in {', '.join(matched_req_skills)}. Consider emphasizing these for the {role} role."
-            elif resume_skills != ["various technologies"]:
-                 suggestion["recommendation_reason"] = f"Your skills in {', '.join(resume_skills[:3])} could be relevant. Tailor your application to highlight alignment with {role} requirements."
-
-
-            suggestions.append(suggestion)
+        # Extract keywords from job description
+        job_words = set(re.findall(r'\b[a-zA-Z]{3,}\b', job_description.lower()))
+        resume_words = set(re.findall(r'\b[a-zA-Z]{3,}\b', resume_text.lower()))
         
-        return suggestions
-
-    def _get_role_requirements(self, role: str) -> List[str]:
-        # These are illustrative. A real system would have a more extensive database.
-        role_requirements = {
-            "Data Analyst": ["SQL", "Excel", "Python for Data Analysis", "Tableau/Power BI", "Statistical Analysis"],
-            "Software Engineer": ["Proficiency in a language (e.g., Java, Python, C++)", "Data Structures", "Algorithms", "Version Control (Git)", "Problem Solving"],
-            "Frontend Developer": ["HTML", "CSS", "JavaScript", "React/Angular/Vue", "Responsive Design", "REST APIs"],
-            "Backend Developer": ["Server-side language (e.g., Python/Java/Node.js)", "Databases (SQL/NoSQL)", "API Design (REST/GraphQL)", "Microservices Architecture"],
-            "Full Stack Developer": ["Frontend skills (HTML, CSS, JS, Framework)", "Backend skills (Language, Database, API)", "DevOps basics"],
-            "Machine Learning Engineer": ["Python", "Machine Learning Algorithms", "Deep Learning Frameworks (TensorFlow/PyTorch)", "Data Preprocessing", "Model Deployment"],
-            "DevOps Engineer": ["CI/CD tools (Jenkins, GitLab CI)", "Containerization (Docker)", "Orchestration (Kubernetes)", "Cloud Platforms (AWS/Azure/GCP)", "Scripting (Bash/Python)"],
-            "Business Analyst": ["Requirements Elicitation", "Data Analysis", "Process Modeling", "Stakeholder Management", "Agile/Scrum"],
-            "Product Manager": ["Product Strategy", "User Research", "Roadmap Planning", "Agile Methodologies", "Communication Skills"],
-            "UI/UX Designer": ["User Interface Design", "User Experience Principles", "Wireframing/Prototyping Tools (Figma, Sketch)", "User Research", "Visual Design"],
-            "Data Scientist": ["Advanced Python/R", "Statistical Modeling", "Machine Learning", "Big Data Technologies (Spark)", "Data Visualization"],
-            "Cybersecurity Analyst": ["Network Security", "SIEM Tools", "Vulnerability Assessment", "Incident Response", "Security Frameworks (NIST, ISO 27001)"],
-            "Mobile Developer": ["iOS (Swift/Objective-C) or Android (Kotlin/Java)", "Mobile UI/UX Principles", "API Integration", "Version Control"],
-            "Cloud Engineer": ["Cloud Platform Expertise (AWS/Azure/GCP)", "Infrastructure as Code (Terraform)", "Networking", "Security Best Practices", "Containerization/Orchestration"],
-            "System Administrator": ["OS Management (Linux/Windows Server)", "Networking Fundamentals", "Scripting", "Virtualization", "Hardware/Software Troubleshooting"]
+        # Filter out common stop words
+        stop_words = {'the', 'and', 'for', 'are', 'but', 'not', 'you', 'all', 'can', 'had', 'her', 'was', 'one', 'our', 'out', 'day', 'get', 'has', 'him', 'his', 'how', 'man', 'new', 'now', 'old', 'see', 'two', 'way', 'who', 'boy', 'did', 'its', 'let', 'put', 'say', 'she', 'too', 'use'}
+        
+        job_keywords = job_words - stop_words
+        resume_keywords = resume_words - stop_words
+        
+        present_keywords = list(job_keywords.intersection(resume_keywords))
+        missing_keywords = list(job_keywords - resume_keywords)
+        
+        return {
+            "present_keywords": present_keywords[:20],  # Limit to top 20
+            "missing_keywords": missing_keywords[:20]   # Limit to top 20
         }
-        return role_requirements.get(role, ["Strong Problem Solving", "Good Communication", "Teamwork Ability"])
 
-
-    def _estimate_salary_range(self, role: str, experience: str) -> str:
-        base_salaries = {
-            "Data Analyst": 60000, "Software Engineer": 80000, "Frontend Developer": 75000,
-            "Backend Developer": 85000, "Full Stack Developer": 90000, 
-            "Machine Learning Engineer": 95000, "DevOps Engineer": 90000, 
-            "Business Analyst": 70000, "Product Manager": 100000, "UI/UX Designer": 70000,
-            "Data Scientist": 100000, "Cybersecurity Analyst": 85000,
-            "Mobile Developer": 80000, "Cloud Engineer": 95000, "System Administrator": 65000
-        } # More comprehensive list
-        default_base = 70000
-        base = base_salaries.get(role, default_base)
+    def generate_detailed_role_analysis(self, resume_text: str, role_predictions: Dict) -> List[Dict]:
+        detailed_analysis = []
         
-        exp_years = 0
-        if isinstance(experience, str):
-            # More robust extraction of years from "X years" or "X+ years"
-            exp_match = re.search(r'(\d+\.?\d*|\d+)', experience) # Catches "5", "5.5", "10+" -> "10"
-            if exp_match:
-                try:
-                    exp_years = float(exp_match.group(1))
-                except ValueError:
-                    exp_years = 0 # Default if conversion fails
-        elif isinstance(experience, (int, float)):
-            exp_years = experience
-
-        # Experience multiplier - non-linear could be better but simple for now
-        if exp_years <= 1:
-            multiplier = 1.0
-        elif exp_years <= 3:
-            multiplier = 1.1 + (exp_years -1) * 0.1 # e.g. 2yrs=1.2, 3yrs=1.3
-        elif exp_years <= 5:
-            multiplier = 1.3 + (exp_years -3) * 0.075 # e.g. 4yrs=1.375, 5yrs=1.45
-        elif exp_years <= 10:
-            multiplier = 1.45 + (exp_years-5) * 0.05 # e.g. 10yrs = 1.7
-        else: # 10+ years
-            multiplier = 1.7 + (exp_years-10) * 0.03 # Slower growth after 10 years
-
-        adjusted_salary_low = int(base * multiplier)
+        role_requirements = {
+            "Data Analyst": {
+                "key_skills": ["SQL", "Excel", "Python", "Tableau", "Statistics"],
+                "description": "Analyzes data to help businesses make informed decisions",
+                "growth_prospects": "High demand with 25% job growth expected",
+                "avg_salary": "$65,000 - $90,000"
+            },
+            "Software Engineer": {
+                "key_skills": ["Programming", "Algorithms", "System Design", "Testing"],
+                "description": "Designs and develops software applications and systems",
+                "growth_prospects": "Excellent with 22% job growth expected",
+                "avg_salary": "$80,000 - $130,000"
+            },
+            "Frontend Developer": {
+                "key_skills": ["HTML/CSS", "JavaScript", "React/Angular", "UI/UX"],
+                "description": "Creates user-facing web applications and interfaces",
+                "growth_prospects": "Strong demand with modern web technologies",
+                "avg_salary": "$70,000 - $110,000"
+            },
+            "Backend Developer": {
+                "key_skills": ["Server Languages", "Databases", "APIs", "Architecture"],
+                "description": "Builds server-side logic and database management",
+                "growth_prospects": "High demand for scalable systems",
+                "avg_salary": "$75,000 - $120,000"
+            },
+            "Machine Learning Engineer": {
+                "key_skills": ["Python", "TensorFlow", "Statistics", "Data Processing"],
+                "description": "Develops AI/ML models and systems",
+                "growth_prospects": "Explosive growth in AI sector",
+                "avg_salary": "$95,000 - $160,000"
+            }
+        }
         
-        # Define a salary range width, maybe % of base or fixed
-        range_width_percentage = 0.15 # e.g. 15% of adjusted_salary_low for the range
-        range_width_absolute = max(15000, int(adjusted_salary_low * range_width_percentage)) # Min 15k width
+        for i, role in enumerate(role_predictions.get("roles", [])[:5]):
+            score = role_predictions.get("scores", [0])[i]
+            requirements = role_requirements.get(role, {
+                "key_skills": ["Domain Knowledge", "Problem Solving"],
+                "description": "Professional role in technology sector",
+                "growth_prospects": "Stable career path",
+                "avg_salary": "$60,000 - $100,000"
+            })
+            
+            detailed_analysis.append({
+                "role": role,
+                "match_score": score,
+                "key_skills": requirements["key_skills"],
+                "description": requirements["description"],
+                "growth_prospects": requirements["growth_prospects"],
+                "avg_salary": requirements["avg_salary"]
+            })
+            
+        return detailed_analysis
 
-        adjusted_salary_high = adjusted_salary_low + range_width_absolute
-
-        # Round to nearest $1000 or $5000 for cleaner look
-        adjusted_salary_low = int(round(adjusted_salary_low / 1000) * 1000)
-        adjusted_salary_high = int(round(adjusted_salary_high / 1000) * 1000)
-
-        return f"${adjusted_salary_low:,} - ${adjusted_salary_high:,} per year (estimated)"
+    def generate_optimization_tips(self, parsed_data: Dict, job_description: str = None) -> List[str]:
+        tips = []
+        
+        # Check basic information completeness
+        if parsed_data.get('phone') == "Not found":
+            tips.append("Add your phone number for better contact accessibility")
+            
+        if parsed_data.get('linkedin') == "Not found":
+            tips.append("Include your LinkedIn profile to show professional networking")
+            
+        if parsed_data.get('github') == "Not found":
+            tips.append("Add your GitHub profile to showcase your coding projects")
+            
+        # Skills analysis
+        skills = parsed_data.get('skills', [])
+        if len(skills) < 8:
+            tips.append("Add more relevant technical skills to strengthen your profile")
+            
+        # Experience analysis
+        experience_details = parsed_data.get('experience_details', [])
+        if not experience_details:
+            tips.append("Add detailed work experience with specific achievements")
+        else:
+            for exp in experience_details:
+                if not exp.get('responsibilities'):
+                    tips.append("Include specific responsibilities and achievements for each role")
+                    
+        # Projects analysis
+        projects = parsed_data.get('projects', [])
+        if len(projects) < 2:
+            tips.append("Add more projects to demonstrate practical skills application")
+            
+        # Summary check
+        if parsed_data.get('summary') == "Not found":
+            tips.append("Write a compelling professional summary highlighting your key strengths")
+            
+        # Job-specific tips
+        if job_description:
+            keywords_analysis = self.extract_keywords_analysis(str(parsed_data), job_description)
+            missing_keywords = keywords_analysis.get('missing_keywords', [])
+            if missing_keywords:
+                tips.append(f"Consider incorporating these job-relevant keywords: {', '.join(missing_keywords[:5])}")
+                
+        return tips[:8]  # Limit to 8 tips
 
     def analyze_resume_complete(self, resume_text: str, job_description: str = None, 
                               preferences: Dict = None) -> Dict:
         if not resume_text or not resume_text.strip():
-             return {
+            return {
                 "timestamp": datetime.now().isoformat(),
                 "error": "Resume text is empty. Please provide resume content.",
-                "parsed_resume": {}, "similarity_scores": {}, 
-                "education" : [],
-                "role_predictions": {"roles": [], "scores": []}, 
-                "job_suggestions": [], "analysis_summary": "Analysis failed due to empty resume."
+                "parsed_resume": {},
+                "similarity_scores": {},
+                "role_predictions": {"roles": [], "scores": []},
+                "keywords_analysis": {"present_keywords": [], "missing_keywords": []},
+                "detailed_role_analysis": [],
+                "optimization_tips": [],
+                "analysis_summary": "Analysis failed due to empty resume."
             }
         
-        # Add the full resume text to parsed_data so it can be used later if needed, e.g., by generate_job_suggestions
+        # Parse resume data
         parsed_data = self.parse_resume(resume_text)
-        parsed_data['full_text'] = resume_text # Store the original resume text
-
-        education = self._extract_education(resume_text)
-
+        parsed_data['full_text'] = resume_text
+        
+        # Calculate similarity scores
         similarity_scores = {}
         if job_description and job_description.strip():
             similarity_scores = self.calculate_similarity_scores(resume_text, job_description)
         
-        role_predictions = self.predict_job_roles(resume_text) # Use full resume text for prediction
-        job_suggestions = self.generate_job_suggestions(parsed_data, preferences) # Pass all parsed_data
+        # Predict job roles
+        role_predictions = self.predict_job_roles(resume_text)
         
-        name_for_summary = parsed_data.get('name', 'Candidate')
-        if name_for_summary == "Not found": name_for_summary = "Candidate"
-
+        # Extract keywords analysis
+        keywords_analysis = self.extract_keywords_analysis(resume_text, job_description) if job_description else {"present_keywords": [], "missing_keywords": []}
+        
+        # Generate detailed role analysis
+        detailed_role_analysis = self.generate_detailed_role_analysis(resume_text, role_predictions)
+        
+        # Generate optimization tips
+        optimization_tips = self.generate_optimization_tips(parsed_data, job_description)
+        
+        # Create analysis summary
+        name = parsed_data.get('name', 'Candidate')
+        if name == "Not found":
+            name = "Candidate"
+            
+        top_role = role_predictions.get('roles', ['General'])[0]
+        num_skills = len(parsed_data.get('skills', []))
+        
+        analysis_summary = f"Analysis completed for {name}. Top predicted role: {top_role}. Found {num_skills} relevant skills."
+        
         complete_analysis = {
             "timestamp": datetime.now().isoformat(),
             "parsed_resume": parsed_data,
             "similarity_scores": similarity_scores,
-            "education": education,
             "role_predictions": role_predictions,
-            "job_suggestions": job_suggestions,
-            "analysis_summary": f"Analysis completed for {name_for_summary}."
+            "keywords_analysis": keywords_analysis,
+            "detailed_role_analysis": detailed_role_analysis,
+            "optimization_tips": optimization_tips,
+            "analysis_summary": analysis_summary
         }
         
         return complete_analysis
-    
-# --- end of dummy.py ---
-    

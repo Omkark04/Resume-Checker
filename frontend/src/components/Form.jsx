@@ -59,7 +59,8 @@ function Form({ route, route2, method }) {
             
             {/* Always visible fields */}
             <input
-                className="form-input"
+                className="form-input border"
+                id="username"
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
@@ -68,7 +69,8 @@ function Form({ route, route2, method }) {
             />
             
             <input
-                className="form-input"
+                className="form-input border"
+                id="password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -80,7 +82,7 @@ function Form({ route, route2, method }) {
             {method === "register" && (
                 <>
                     <input
-                        className="form-input"
+                        className="form-input border"
                         type="text"
                         value={full_name}
                         onChange={(e) => setFullname(e.target.value)}
@@ -89,7 +91,7 @@ function Form({ route, route2, method }) {
                     />
                     
                     <select
-                        className="form-input"
+                        className="form-input border"
                         value={user_type}
                         onChange={(e) => setUsertype(e.target.value)}
                         required
@@ -99,7 +101,7 @@ function Form({ route, route2, method }) {
                     </select>
                     
                     <input
-                        className="form-input"
+                        className="form-input border"
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
@@ -108,7 +110,7 @@ function Form({ route, route2, method }) {
                     />
                     
                     <input
-                        className="form-input"
+                        className="form-input border"
                         type="tel"
                         value={mobile}
                         onChange={(e) => setMobile(e.target.value)}
@@ -118,7 +120,7 @@ function Form({ route, route2, method }) {
                     
                     <label className="form-label">Date of Birth</label>
                     <input
-                        className="form-input"
+                        className="form-input border"
                         type="date"
                         value={dob}
                         onChange={(e) => setDob(e.target.value)}

@@ -32,22 +32,73 @@ class Note(models.Model):
 
     def __str__(self):
         return self.title
-    
+
 class ResumeAnalysis(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='resume_analyses')
     resume_file = models.FileField(upload_to='resumes/')
     job_description = models.TextField(blank=True, null=True)
     analysis_time = models.DateTimeField(auto_now_add=True)
-    parsed_data = models.JSONField()
-    analysis_results = models.JSONField()
-    ats_score = models.FloatField()
+    
+    # Enhanced parsed data fields
+    parsed_data = models.JSONField(default=dict)  # Contains all extracted information
+    analysis_results = models.JSONField(default=dict)  # Complete analysis results
+    
+    # ATS scoring
+    ats_score = models.FloatField(default=0)
+    ats_breakdown = models.JSONField(default=dict)  # Detailed ATS score breakdown
+    
+    # Keywords analysis
     matched_keywords = models.JSONField(default=list)
     missing_keywords = models.JSONField(default=list)
+    keywords_analysis = models.JSONField(default=dict)  # Enhanced keyword analysis
+    
+    # Role predictions and analysis
+    role_predictions = models.JSONField(default=dict)
+    detailed_role_analysis = models.JSONField(default=list)
+    
+    # Recommendations and optimization
     recommendations = models.JSONField(default=list)
+    optimization_tips = models.JSONField(default=list)
+    
+    # Similarity scores (for JD matching)
+    similarity_scores = models.JSONField(default=dict)
+    
+    # Legacy field - keeping for backward compatibility
     education = models.JSONField(default=list)
+    
+    # Analysis summary
+    analysis_summary = models.TextField(blank=True, null=True)
+    
+    # Processing metadata
+    processing_time = models.FloatField(default=0)  # Time taken for analysis in seconds
+    model_version = models.CharField(max_length=50, default='v1.0')
+
+    class Meta:
+        ordering = ['-analysis_time']
+        indexes = [
+            models.Index(fields=['user', '-analysis_time']),
+            models.Index(fields=['ats_score']),
+        ]
 
     def __str__(self):
-        return f"Resume Analysis for {self.user.username} on {self.analysis_time}"
+        return f"Resume Analysis for {self.user.username} on {self.analysis_time.strftime('%Y-%m-%d %H:%M')}"
+
+    @property
+    def top_role(self):
+        """Returns the top predicted role"""
+        roles = self.role_predictions.get('roles', [])
+        return roles[0] if roles else 'Not determined'
+    
+    @property
+    def skills_count(self):
+        """Returns the number of skills found"""
+        skills = self.parsed_data.get('skills', [])
+        return len(skills) if skills else 0
+    
+    @property
+    def jd_match_percentage(self):
+        """Returns the job description match percentage"""
+        return self.similarity_scores.get('combined_score', 0)
 
 class Resume(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='resumes')
@@ -109,8 +160,7 @@ class Interest(models.Model):
     resume = models.ForeignKey(Resume, on_delete=models.CASCADE, related_name='interests')
     name = models.CharField(max_length=100)
 
-# NEW MODELS FOR GENERATED RESUMES
-
+# Generated Resume Models
 class GeneratedResumeSet(models.Model):
     """Represents a set of generated resumes for a specific resume data"""
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -167,7 +217,7 @@ class GeneratedResume(models.Model):
                 'description': 'Clean layout with sidebar and circular profile picture'
             },
             'classic': {
-                'title': 'Classic Design',
+                'title': 'Classic Design', 
                 'description': 'Traditional format with profile picture at top'
             },
             'minimalist': {
@@ -181,3 +231,144 @@ class GeneratedResume(models.Model):
         """Increment download counter"""
         self.download_count += 1
         self.save(update_fields=['download_count'])
+
+# Enhanced Analysis Models for advanced features
+class KeywordAnalysis(models.Model):
+    """Detailed keyword analysis for each resume analysis"""
+    resume_analysis = models.OneToOneField(ResumeAnalysis, on_delete=models.CASCADE, related_name='keyword_analysis_detail')
+    
+    # Technical keywords
+    technical_keywords_found = models.JSONField(default=list)
+    technical_keywords_missing = models.JSONField(default=list)
+    technical_match_score = models.FloatField(default=0)
+    
+    # Soft skills keywords
+    soft_skills_found = models.JSONField(default=list)
+    soft_skills_missing = models.JSONField(default=list)
+    soft_skills_match_score = models.FloatField(default=0)
+    
+    # Industry-specific keywords
+    industry_keywords_found = models.JSONField(default=list)
+    industry_keywords_missing = models.JSONField(default=list)
+    industry_match_score = models.FloatField(default=0)
+    
+    # Action verbs analysis
+    action_verbs_found = models.JSONField(default=list)
+    action_verbs_score = models.FloatField(default=0)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Keyword Analysis for {self.resume_analysis.user.username}"
+
+class RoleAnalysisDetail(models.Model):
+    """Detailed analysis for each predicted role"""
+    resume_analysis = models.ForeignKey(ResumeAnalysis, on_delete=models.CASCADE, related_name='role_analysis_details')
+    
+    role_name = models.CharField(max_length=100)
+    match_percentage = models.FloatField()
+    
+    # Skill alignment
+    matching_skills = models.JSONField(default=list)
+    missing_skills = models.JSONField(default=list)
+    skill_gap_score = models.FloatField(default=0)
+    
+    # Experience alignment
+    experience_relevance_score = models.FloatField(default=0)
+    experience_feedback = models.TextField(blank=True)
+    
+    # Education alignment
+    education_relevance_score = models.FloatField(default=0)
+    education_feedback = models.TextField(blank=True)
+    
+    # Market insights
+    market_demand = models.CharField(max_length=50, choices=[
+        ('Very High', 'Very High'),
+        ('High', 'High'),
+        ('Medium', 'Medium'),
+        ('Low', 'Low')
+    ], default='Medium')
+    
+    salary_range = models.CharField(max_length=100, blank=True)
+    growth_prospects = models.TextField(blank=True)
+    
+    # Recommendations specific to this role
+    role_specific_tips = models.JSONField(default=list)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ['resume_analysis', 'role_name']
+        ordering = ['-match_percentage']
+
+    def __str__(self):
+        return f"{self.role_name} Analysis - {self.match_percentage}%"
+
+class ATSScoreBreakdown(models.Model):
+    """Detailed ATS score breakdown"""
+    resume_analysis = models.OneToOneField(ResumeAnalysis, on_delete=models.CASCADE, related_name='ats_breakdown_detail')
+    
+    # Individual component scores
+    personal_info_score = models.FloatField(default=0)
+    summary_score = models.FloatField(default=0)
+    skills_score = models.FloatField(default=0)
+    experience_score = models.FloatField(default=0)
+    education_score = models.FloatField(default=0)
+    projects_score = models.FloatField(default=0)
+    formatting_score = models.FloatField(default=0)
+    keywords_score = models.FloatField(default=0)
+    
+    # Detailed feedback for each component
+    personal_info_feedback = models.TextField(blank=True)
+    summary_feedback = models.TextField(blank=True)
+    skills_feedback = models.TextField(blank=True)
+    experience_feedback = models.TextField(blank=True)
+    education_feedback = models.TextField(blank=True)
+    projects_feedback = models.TextField(blank=True)
+    formatting_feedback = models.TextField(blank=True)
+    keywords_feedback = models.TextField(blank=True)
+    
+    # Overall metrics
+    total_score = models.FloatField(default=0)
+    grade = models.CharField(max_length=2, choices=[
+        ('A+', 'Excellent (90-100)'),
+        ('A', 'Very Good (80-89)'),
+        ('B', 'Good (70-79)'),
+        ('C', 'Fair (60-69)'),
+        ('D', 'Poor (Below 60)')
+    ], blank=True)
+    
+    # Improvement priorities
+    top_improvement_areas = models.JSONField(default=list)
+    estimated_improvement_time = models.CharField(max_length=50, blank=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"ATS Breakdown - {self.total_score}/100 ({self.grade})"
+
+class AnalysisHistory(models.Model):
+    """Track analysis history and improvements over time"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='analysis_history')
+    resume_analysis = models.ForeignKey(ResumeAnalysis, on_delete=models.CASCADE, related_name='history_entries')
+    
+    # Previous scores for comparison
+    previous_ats_score = models.FloatField(null=True, blank=True)
+    current_ats_score = models.FloatField()
+    score_improvement = models.FloatField(default=0)
+    
+    # Key changes made
+    changes_made = models.JSONField(default=list)
+    improvements_noted = models.JSONField(default=list)
+    
+    # Recommendations followed
+    recommendations_implemented = models.JSONField(default=list)
+    pending_recommendations = models.JSONField(default=list)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Analysis History - {self.user.username} - {self.created_at.strftime('%Y-%m-%d')}"

@@ -17,15 +17,23 @@
     width: 100%;
     padding: 0.75rem;
     margin-bottom: 1rem;
-    border: 1px solid #ddd;
+    border: 2px solid;
     border-radius: 4px;
     font-size: 1rem;
 }
+
 
 .form-input:focus {
     outline: none;
     border-color: #646cff;
     box-shadow: 0 0 0 2px rgba(100, 108, 255, 0.2);
+}
+
+#username, #password {
+    border: 2px solid rgba(50, 44, 44, 0.297);
+    background: rgba(89, 131, 83, 0.1);
+    backdrop-filter: blur(2px);
+    border-radius: 1em;
 }
 
 .form-label {
