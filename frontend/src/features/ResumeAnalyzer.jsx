@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../api';
 import AnalysisResults from './AnalysisResults';
 import ErrorBoundary from './ErrorBoundary';
 import Navbar from '../components/Navbar';
 import { useResume } from "../features/ResumeContext";
-import { Upload, FileText, Briefcase, Loader, AlertCircle, CheckCircle, X } from 'lucide-react';
 
 function ResumeAnalyzer() {
+    const navigate = useNavigate();
     const { analysisResult, setAnalysisResult } = useResume();
     const [username, setUsername] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -16,6 +17,25 @@ function ResumeAnalyzer() {
     const [jobDescription, setJobDescription] = useState('');
     const [isDragging, setIsDragging] = useState(false);
     const [uploadProgress, setUploadProgress] = useState(0);
+    const [theme, setTheme] = useState('light');
+
+    useEffect(() => {
+        detectTheme();
+        
+        const observer = new MutationObserver(detectTheme);
+        observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+        
+        return () => observer.disconnect();
+    }, []);
+
+    const detectTheme = () => {
+        const bodyClass = document.body.className;
+        if (bodyClass.includes('dark-theme')) {
+            setTheme('dark');
+        } else {
+            setTheme('light');
+        }
+    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -139,14 +159,19 @@ function ResumeAnalyzer() {
         return '📄';
     };
 
+    const handleResumeBuilder = () => {
+        navigate('/resume-builder');
+    };
+
     return (
-        <div className="enhanced-resume-analyzer">
+        <div className={`enhanced-resume-analyzer theme-${theme}`}>
             <style jsx>{`
                 .enhanced-resume-analyzer {
                     min-height: 100vh;
-                    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #1e1b4b 100%);
-                    color: #e2e8f0;
+                    background: var(--bg-gradient);
+                    color: var(--text-primary);
                     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+                    transition: all 0.4s ease;
                 }
 
                 .analyzer-header {
@@ -154,7 +179,7 @@ function ResumeAnalyzer() {
                     padding: 4rem 2rem 2rem;
                     background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(236, 72, 153, 0.1));
                     backdrop-filter: blur(20px);
-                    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                    border-bottom: 1px solid var(--glass-border);
                 }
 
                 .header-title {
@@ -175,13 +200,13 @@ function ResumeAnalyzer() {
 
                 .header-subtitle {
                     font-size: 1.25rem;
-                    color: #94a3b8;
+                    color: var(--text-secondary);
                     margin-bottom: 0.5rem;
                 }
 
                 .header-welcome {
                     font-size: 1rem;
-                    color: #cbd5e1;
+                    color: var(--text-muted);
                     font-weight: 500;
                 }
 
@@ -192,11 +217,11 @@ function ResumeAnalyzer() {
                 }
 
                 .upload-section {
-                    background: rgba(30, 41, 59, 0.8);
+                    background: var(--glass-bg);
                     backdrop-filter: blur(16px);
                     border-radius: 24px;
                     padding: 3rem;
-                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    border: 1px solid var(--glass-border);
                     margin-bottom: 3rem;
                     transition: all 0.3s ease;
                 }
@@ -213,7 +238,7 @@ function ResumeAnalyzer() {
                     margin-bottom: 2rem;
                     font-size: 1.5rem;
                     font-weight: 700;
-                    color: #e2e8f0;
+                    color: var(--text-primary);
                 }
 
                 .upload-area {
@@ -275,11 +300,11 @@ function ResumeAnalyzer() {
                     font-size: 1.5rem;
                     font-weight: 600;
                     margin-bottom: 0.5rem;
-                    color: #e2e8f0;
+                    color: var(--text-primary);
                 }
 
                 .upload-subtitle {
-                    color: #94a3b8;
+                    color: var(--text-secondary);
                     margin-bottom: 1.5rem;
                 }
 
@@ -330,7 +355,7 @@ function ResumeAnalyzer() {
 
                 .file-size {
                     font-size: 0.875rem;
-                    color: #94a3b8;
+                    color: var(--text-muted);
                 }
 
                 .remove-file {
@@ -364,10 +389,10 @@ function ResumeAnalyzer() {
                     width: 100%;
                     min-height: 120px;
                     padding: 1rem;
-                    background: rgba(30, 41, 59, 0.6);
-                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    background: var(--glass-bg);
+                    border: 1px solid var(--glass-border);
                     border-radius: 12px;
-                    color: #e2e8f0;
+                    color: var(--text-primary);
                     font-size: 0.95rem;
                     resize: vertical;
                     transition: all 0.3s ease;
@@ -377,7 +402,7 @@ function ResumeAnalyzer() {
                     outline: none;
                     border-color: #4f46e5;
                     box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
-                    background: rgba(30, 41, 59, 0.8);
+                    background: rgba(79, 70, 229, 0.05);
                 }
 
                 .textarea-label {
@@ -386,7 +411,7 @@ function ResumeAnalyzer() {
                     gap: 0.5rem;
                     margin-bottom: 0.75rem;
                     font-weight: 500;
-                    color: #cbd5e1;
+                    color: var(--text-secondary);
                 }
 
                 .analyze-button {
@@ -521,6 +546,25 @@ function ResumeAnalyzer() {
                     50% { transform: scale(1.2); opacity: 0.7; }
                 }
 
+                /* Theme Variables */
+                .theme-light {
+                    --bg-gradient: linear-gradient(135deg, #f8f9ff 0%, #e3f2fd 50%, #f3e5f5 100%);
+                    --text-primary: #1e293b;
+                    --text-secondary: #64748b;
+                    --text-muted: #94a3b8;
+                    --glass-bg: rgba(255, 255, 255, 0.8);
+                    --glass-border: rgba(255, 255, 255, 0.2);
+                }
+
+                .theme-dark {
+                    --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #1e1b4b 100%);
+                    --text-primary: #e2e8f0;
+                    --text-secondary: #cbd5e1;
+                    --text-muted: #94a3b8;
+                    --glass-bg: rgba(30, 41, 59, 0.8);
+                    --glass-border: rgba(255, 255, 255, 0.1);
+                }
+
                 @media (max-width: 768px) {
                     .analyzer-header {
                         padding: 3rem 1rem 2rem;
@@ -547,7 +591,7 @@ function ResumeAnalyzer() {
             <Navbar />
             
             <div className="analyzer-header">
-                <h1 className="header-title">🎯 AI Resume Analyzer</h1>
+                <h1 className="header-title"> AI Resume Analyzer</h1>
                 <p className="header-subtitle">Get comprehensive insights and ATS optimization tips</p>
                 {username && <p className="header-welcome">Welcome back, <strong>{username}</strong>!</p>}
             </div>
@@ -555,17 +599,16 @@ function ResumeAnalyzer() {
             <div className="analyzer-container">
                 {error && (
                     <div className="error-message">
-                        <AlertCircle size={20} />
+                        <span>⚠️</span>
                         <span>{error}</span>
                         <button onClick={() => setError(null)} className="error-dismiss">
-                            <X size={16} />
+                            ✕
                         </button>
                     </div>
                 )}
 
                 <div className="upload-section">
                     <div className="section-header">
-                        <Upload size={24} />
                         <span>Upload & Analyze Resume</span>
                     </div>
 
@@ -587,10 +630,10 @@ function ResumeAnalyzer() {
                                 {resumeFile ? 'Click to change file' : 'Or click to browse files'}
                             </p>
                             <button type="button" className="upload-button">
-                                <Upload size={18} />
+                                <span>📤</span>
                                 {resumeFile ? 'Change File' : 'Browse Files'}
                             </button>
-                            <p style={{marginTop: '1rem', fontSize: '0.875rem', color: '#94a3b8'}}>
+                            <p style={{marginTop: '1rem', fontSize: '0.875rem', color: 'var(--text-muted)'}}>
                                 Supports PDF, DOCX, and TXT files (Max 10MB)
                             </p>
                         </div>
@@ -619,14 +662,14 @@ function ResumeAnalyzer() {
                                     onClick={removeFile} 
                                     className="remove-file"
                                 >
-                                    <X size={16} />
+                                    ✕
                                 </button>
                             </div>
                         )}
 
                         <div className="job-description-section">
                             <label className="textarea-label">
-                                <Briefcase size={18} />
+                                <span>💼</span>
                                 Job Description (Optional but Recommended)
                             </label>
                             <div className="textarea-container">
@@ -638,7 +681,7 @@ function ResumeAnalyzer() {
                                     rows={6}
                                 />
                             </div>
-                            <p style={{fontSize: '0.875rem', color: '#94a3b8', marginTop: '0.5rem'}}>
+                            <p style={{fontSize: '0.875rem', color: 'var(--text-muted)', marginTop: '0.5rem'}}>
                                 💡 Adding a job description unlocks advanced features like keyword matching, role predictions, and tailored optimization tips.
                             </p>
                         </div>
@@ -655,7 +698,6 @@ function ResumeAnalyzer() {
                                 </>
                             ) : (
                                 <>
-                                    <FileText size={20} />
                                     Analyze Resume
                                 </>
                             )}
@@ -674,10 +716,10 @@ function ResumeAnalyzer() {
                     {isLoading && (
                         <div className="analysis-status">
                             <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem', marginBottom: '1rem'}}>
-                                <FileText size={20} />
+                                <span>📊</span>
                                 <span style={{fontWeight: '600'}}>AI Analysis in Progress</span>
                             </div>
-                            <p style={{color: '#94a3b8', marginBottom: '0.5rem'}}>
+                            <p style={{color: 'var(--text-muted)', marginBottom: '0.5rem'}}>
                                 Extracting information, analyzing skills, predicting roles...
                             </p>
                             <div className="status-dots">
@@ -691,7 +733,7 @@ function ResumeAnalyzer() {
 
                 {analysisResult && analysisResult.parsed_data && (
                     <ErrorBoundary>
-                        <AnalysisResults analysis={analysisResult} />
+                        <AnalysisResults analysis={analysisResult} onResumeBuilder={handleResumeBuilder} />
                     </ErrorBoundary>
                 )}
             </div>

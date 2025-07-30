@@ -29,7 +29,7 @@
     box-shadow: 0 0 0 2px rgba(100, 108, 255, 0.2);
 }
 
-#username, #password {
+#username, #password, #full-name, #email, #dob, #mobile, #user-type {
     border: 2px solid rgba(50, 44, 44, 0.297);
     background: rgba(89, 131, 83, 0.1);
     backdrop-filter: blur(2px);

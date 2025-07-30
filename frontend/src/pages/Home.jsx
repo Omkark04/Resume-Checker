@@ -98,32 +98,27 @@ const Home = () => {
             { 
               title: "AI-Powered Matching", 
               desc: "Our intelligent algorithm analyzes thousands of jobs to find the perfect matches for your skills and experience.",
-              icon: "🤖"
+              
             },
             { 
               title: "Resume Scoring", 
-              desc: "Get an instant rating of your resume's strength with detailed feedback on how to improve it.",
-              icon: "📊"
+              desc: "Get an instant rating of your resume's strength with detailed feedback on how to improve it."
             },
             { 
               title: "Smart Filters", 
-              desc: "Automatically filters jobs by experience level, job type, location, and salary range to save you time.",
-              icon: "🔍"
+              desc: "Automatically filters jobs by experience level, job type, location, and salary range to save you time."
             },
             { 
               title: "Match Probability", 
-              desc: "See your chances of getting each job with our proprietary scoring system based on employer requirements.",
-              icon: "📈"
+              desc: "See your chances of getting each job with our proprietary scoring system based on employer requirements."
             },
             { 
               title: "Improvement Tips", 
-              desc: "Personalized suggestions to enhance your skills and make your profile more attractive to employers.",
-              icon: "💡"
+              desc: "Personalized suggestions to enhance your skills and make your profile more attractive to employers."
             },
             { 
               title: "Download Analysis", 
-              desc: "Save your resume analysis and improvement suggestions for future reference and tracking.",
-              icon: "💾"
+              desc: "Save your resume analysis and improvement suggestions for future reference and tracking."
             }
           ].map((feature, index) => (
             <div className="feature-card" key={index}>
@@ -174,20 +169,17 @@ const Home = () => {
             { 
               name: "Sarah Johnson", 
               role: "Software Engineer at Google",
-              quote: "CareerPulse helped me land my dream job in just 2 weeks! The AI matching was spot on.",
-              avatar: "👩‍💻"
+              quote: "CareerPulse helped me land my dream job in just 2 weeks! The AI matching was spot on."
             },
             { 
               name: "Michael Chen", 
               role: "Product Manager at Amazon",
-              quote: "The resume scoring feature gave me actionable insights that improved my response rate by 300%.",
-              avatar: "👨‍💼"
+              quote: "The resume scoring feature gave me actionable insights that improved my response rate by 300%."
             },
             { 
               name: "Emily Rodriguez", 
               role: "Data Scientist at Microsoft",
-              quote: "I was getting lost in job boards until CareerPulse showed me exactly which jobs fit my profile.",
-              avatar: "👩‍🔬"
+              quote: "I was getting lost in job boards until CareerPulse showed me exactly which jobs fit my profile."
             }
           ].map((testimonial, index) => (
             <div className="testimonial-card" key={index}>

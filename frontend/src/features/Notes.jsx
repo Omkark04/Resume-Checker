@@ -60,7 +60,7 @@ function Notes() {
 
       <div className="notes-container">
         {/* Header */}
-        <h2 className="notes-title">📝 Your Notes</h2>
+        <h2 className="notes-title"> Your Notes</h2>
 
         {/* Notes Grid */}
         <div className="notes-grid">
@@ -99,7 +99,7 @@ function Notes() {
 
         {/* Create Note Section */}
         <div className="create-note-section">
-          <h3 className="create-title">✨ Create New Note</h3>
+          <h3 className="create-title"> Create New Note</h3>
           <form onSubmit={createNote} className="note-form">
             <input
               type="text"
@@ -121,7 +121,7 @@ function Notes() {
               className="form-textarea"
             />
             <button type="submit" className="submit-button">
-              🚀 Add Note
+              Add Note
             </button>
           </form>
         </div>

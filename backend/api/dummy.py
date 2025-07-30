@@ -165,19 +165,12 @@ class JobMatchingSystem:
     def _extract_skills(self, text: str) -> List[str]:
         skills_found = []
         text_lower = text.lower()
-        
+        # Consider adding a regex for skills if they follow a pattern, or look in a specific "Skills" section
         for category, skills_list in self.skills_database.items():
             for skill in skills_list:
+                # Use word boundaries to avoid partial matches e.g. 'C' in 'Certificate'
                 if re.search(r'\b' + re.escape(skill.lower()) + r'\b', text_lower):
                     skills_found.append(skill)
-                    
-        # Additional skill extraction from common patterns
-        skill_section_match = re.search(r'(?:skills?|technical\s+skills?|competencies)[:]*\s*(.+?)(?=\n\s*[A-Z][^:]*:|$)', text, re.IGNORECASE | re.DOTALL)
-        if skill_section_match:
-            skills_text = skill_section_match.group(1)
-            additional_skills = re.findall(r'\b[A-Za-z][A-Za-z0-9+#.]{2,15}\b', skills_text)
-            skills_found.extend([skill for skill in additional_skills if len(skill) > 2])
-                    
         return list(set(skills_found))
 
     def _extract_experience_level(self, text: str) -> str:

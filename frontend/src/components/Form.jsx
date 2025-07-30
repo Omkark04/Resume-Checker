@@ -83,6 +83,7 @@ function Form({ route, route2, method }) {
                 <>
                     <input
                         className="form-input border"
+                        id="full-name"
                         type="text"
                         value={full_name}
                         onChange={(e) => setFullname(e.target.value)}
@@ -92,6 +93,7 @@ function Form({ route, route2, method }) {
                     
                     <select
                         className="form-input border"
+                        id="user-type"
                         value={user_type}
                         onChange={(e) => setUsertype(e.target.value)}
                         required
@@ -102,6 +104,7 @@ function Form({ route, route2, method }) {
                     
                     <input
                         className="form-input border"
+                        id="email"
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
@@ -112,6 +115,7 @@ function Form({ route, route2, method }) {
                     <input
                         className="form-input border"
                         type="tel"
+                        id="mobile"
                         value={mobile}
                         onChange={(e) => setMobile(e.target.value)}
                         placeholder="Mobile Number"
@@ -121,6 +125,7 @@ function Form({ route, route2, method }) {
                     <label className="form-label">Date of Birth</label>
                     <input
                         className="form-input border"
+                        id="dob"
                         type="date"
                         value={dob}
                         onChange={(e) => setDob(e.target.value)}

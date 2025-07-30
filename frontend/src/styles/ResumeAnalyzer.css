@@ -79,6 +79,7 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
 /* Enhanced Resume Analyzer Container */
@@ -810,6 +811,293 @@ body {
   background: var(--error-gradient);
 }
 
+/* Info Grid and Items */
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  transition: background 0.2s ease;
+}
+
+.info-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.info-label {
+  font-weight: 500;
+  color: var(--text-secondary);
+  min-width: 80px;
+}
+
+.info-value {
+  color: var(--text-primary);
+  flex: 1;
+}
+
+/* Skills Display */
+.skills-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.skill-chip {
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: transform 0.2s ease;
+}
+
+.skill-chip:hover {
+  transform: translateY(-2px);
+}
+
+/* Experience and Project Items */
+.experience-item, .project-item {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  transition: background 0.2s ease;
+}
+
+.experience-item {
+  border-left: 4px solid #4f46e5;
+}
+
+.project-item {
+  border-left: 4px solid #ec4899;
+}
+
+.experience-item:hover, .project-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.experience-header {
+  margin-bottom: 1rem;
+}
+
+.job-title, .project-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.company-name {
+  color: #4f46e5;
+  font-weight: 500;
+}
+
+.job-details {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+}
+
+.responsibilities-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 1rem;
+}
+
+.responsibilities-list li {
+  padding: 0.25rem 0;
+  color: var(--text-secondary);
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.responsibilities-list li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: #4f46e5;
+  font-weight: bold;
+}
+
+/* Tech Stack and Keywords */
+.tech-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.tech-chip {
+  background: linear-gradient(135deg, #ec4899, #f97316);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+}
+
+.keyword-chip {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin: 0.25rem;
+  transition: transform 0.2s ease;
+}
+
+.keyword-chip:hover {
+  transform: translateY(-2px);
+}
+
+.keyword-present {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+}
+
+.keyword-missing {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+}
+
+/* Role Analysis */
+.role-analysis-item {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  border-left: 4px solid #06b6d4;
+}
+
+.role-match-score {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #06b6d4;
+  margin-bottom: 0.5rem;
+}
+
+.role-description {
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.role-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.role-detail-item {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.role-detail-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.role-detail-value {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+/* Tips and Recommendations */
+.tips-list {
+  list-style: none;
+  padding: 0;
+}
+
+.tip-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  margin-bottom: 0.75rem;
+  transition: background 0.2s ease;
+}
+
+.tip-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.tip-icon {
+  color: #f59e0b;
+  margin-top: 0.125rem;
+  flex-shrink: 0;
+}
+
+/* Similarity Scores */
+.similarity-scores {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.similarity-score {
+  text-align: center;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1rem;
+  border-radius: 12px;
+}
+
+.similarity-score-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #4f46e5;
+}
+
+.similarity-score-label {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+}
+
+/* Call to Action */
+.cta-section {
+  text-align: center;
+  margin-top: 3rem;
+}
+
+.cta-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(90deg, #4f46e5, #ec4899);
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 30px rgba(79, 70, 229, 0.3);
+  border: none;
+  cursor: pointer;
+}
+
+.cta-button:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 15px 40px rgba(79, 70, 229, 0.5);
+  background: linear-gradient(90deg, #4338ca, #db2777);
+}
+
 /* Responsive Design */
 @media (max-width: 1200px) {
   .results-grid {
@@ -904,4 +1192,30 @@ body {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* Dark theme specific adjustments */
+.theme-dark .text-blue-400 {
+  color: #60a5fa !important;
+}
+
+.theme-dark .text-blue-300 {
+  color: #93c5fd !important;
+}
+
+.theme-dark .text-gray-400 {
+  color: #9ca3af !important;
+}
+
+/* Light theme specific adjustments */
+.theme-light .text-blue-400 {
+  color: #3b82f6 !important;
+}
+
+.theme-light .text-blue-300 {
+  color: #2563eb !important;
+}
+
+.theme-light .text-gray-400 {
+  color: #6b7280 !important;
 }
